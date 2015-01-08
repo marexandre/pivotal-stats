@@ -19,14 +19,30 @@
       text-align: center;
       color: #999;
     }
+
+    .users {
+      margin-top: 30px;
+    }
+
+    .user {
+      display: inline-block;
+      border: 1px solid #eee;
+      padding: 6px;
+      margin: 4px;
+    }
+
   </style>
 </head>
 <body>
 
   <div class="wrapper">
-    <div id="container1" class="pie">Loading...</div>
-    <div id="container2" class="pie">Loading...</div>
-    <div id="container3" class="pie">Loading...</div>
+    <div class="project">
+      <div id="container1" class="pie">Loading...</div>
+      <div id="container2" class="pie">Loading...</div>
+      <div id="container3" class="pie">Loading...</div>
+    </div>
+
+    <div class="users"></div>
   </div>
 
   <script type="text/javascript">
@@ -95,10 +111,47 @@
       });
     };
 
+    var createUserStats = function(data) {
+      var html = [];
+
+      for (var key in data) {
+        var h = ''+
+          '<div class="user">'+
+            // '<p>'+ data[key].name +'</p>'+
+            '<p>'+ data[key].initials +'</p>'+
+            '<p>'+ createStatsByType(data[key].current, 'current') +'</p>'+
+            '<p>'+ createStatsByType(data[key].backlog, 'backlog') +'</p>'+
+          '</div>';
+        html.push(h);
+      }
+
+      $('.users').html(html.join(''));
+    };
+
+    var createStatsByType = function(data, type) {
+      var h = [];
+
+      for (var key in data) {
+        h.push(key +': '+ data[key].length);
+      }
+
+      return '<b>'+ type +'</b><br>' + h.join(',');
+    };
+
+
     $(function() {
       createGraph($('#container1'), 'backlog');
       createGraph($('#container2'), 'current');
       createGraph($('#container3'), 'done');
+
+      $.ajax({
+        url: 'http://localhost:8999/api/user_stats',
+        type: 'GET',
+        dataType: 'json'
+      }).done(function(res) {
+        createUserStats(res.data);
+      });
+
     });
 
   </script>
