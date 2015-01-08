@@ -117,19 +117,6 @@ var isValidIterationsType = function(t) {
   return t === 'done' || t === 'current' || t === 'backlog' || t === 'current_backlog';
 };
 
-var merge = function() {
-  var obj = {};
-  var key;
-  for (var i = 0, imax; i < arguments.length; i++) {
-    for (key in arguments[i]) {
-      if (arguments[i].hasOwnProperty(key)) {
-        obj[key] = arguments[i][key];
-      }
-    }
-  }
-  return obj;
-};
-
 /**
  * API
  */
@@ -155,20 +142,7 @@ var api = express()
       var list = [current, backlog];
       list = _.flatten(list);
       list = _.groupBy(list, 'id');
-
-      for (var key in list) {
-        var l = list[key];
-        var tmp = {};
-
-        for (var i = 0, imax = l.length; i < imax; i++) {
-          if (imax === 1) {
-            tmp = merge(tmp, l[i]);
-          } else {
-            tmp = merge(tmp, l[i], l[i + 1]);
-          }
-        }
-        list[key] = tmp;
-      }
+      list = helper.flatten(list);
 
       // helper.saveJsonToFile('./data/current_backlog_data.json', list);
 
