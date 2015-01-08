@@ -49,7 +49,7 @@
 
     var initHighcharts = function($target, type, data) {
       $target.highcharts({
-        title: { text: type },
+        title: { text: type + ': '+ data.total },
         exporting: { enabled: false },
         credits: { enabled: false },
         // tooltip: { enabled: false },

@@ -11,7 +11,6 @@ var express = require('express');
 var morgan = require('morgan');
 
 var getIterationsProgress = function(data) {
-  var total = data.length;
   var feature = 0;
   var chore = 0;
   var bug = 0;
@@ -31,10 +30,10 @@ var getIterationsProgress = function(data) {
     }
   }
   return {
-    total: total,
+    total   : feature + chore + bug,
     features: feature,
-    chores: chore,
-    bugs:bug
+    chores  : chore,
+    bugs    : bug
   };
 };
 
