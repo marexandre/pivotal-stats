@@ -16,12 +16,16 @@ var getIterationsProgress = function(data) {
 
   for (var i = 0, imax = data.length; i < imax; i++) {
     var d = data[i];
-    if (d.storyType === 'feature') {
-      feature += 1;
-    } else if (d.storyType === 'chore') {
-      chore += 1;
-    } else if (d.storyType === 'bug') {
-      bug += 1;
+    switch (d.storyType) {
+      case 'feature':
+        feature += 1;
+        break;
+      case 'chore':
+        chore += 1;
+        break;
+      case 'bug':
+        bug += 1;
+        break;
     }
   }
   return {
@@ -30,7 +34,7 @@ var getIterationsProgress = function(data) {
     chores: chore,
     bugs:bug
   };
-}
+};
 
 var getIterations = function(type, cb) {
   client.project(projectID).iterations.query({ 'scope': type }, function(error, data) {
@@ -40,15 +44,64 @@ var getIterations = function(type, cb) {
       cb(error, {});
     }
     else {
+      console.log('iterations data items: '+ data.length);
+
+      generateUserData(data[0].stories);
+
       var obj = getIterationsProgress(data[0].stories);
       cb(null, obj);
     }
   });
-}
+};
+
+var generateUserData = function(data) {
+  var users = {};
+
+  for (var i = 0, imax = data.length; i < imax; i++) {
+    var d = data[i];
+    // console.log('points: '+ d.estimate, ', owned_by: '+ d.ownedById, ', owners: '+ JSON.stringify(d.ownerIds));
+
+    if (! d.ownedById) {
+      continue;
+    }
+
+    if (! users.hasOwnProperty(d.ownedById)) {
+      users[d.ownedById] = {
+        features: [],
+        chores: [],
+        bugs: []
+      };
+    }
+
+    switch (d.storyType) {
+      case 'feature':
+        users[d.ownedById].features.push({
+          'id': d.id,
+          'state': d.current_state,
+          'estimate': d.estimate
+        });
+        break;
+      case 'chore':
+        users[d.ownedById].chores.push({
+          'id': d.id,
+          'state': d.current_state
+        });
+        break;
+      case 'bug':
+        users[d.ownedById].bugs.push({
+          'id': d.id,
+          'state': d.current_state
+        });
+        break;
+    }
+  }
+
+  console.log(JSON.stringify(users));
+};
 
 var isValidIterationsType = function(t) {
   return t === 'done' || t === 'current' || t === 'backlog' || t === 'current_backlog';
-}
+};
 
 /**
  * API
@@ -74,9 +127,9 @@ app.use('/api', api);
 app.use(morgan("dev", { immediate: true }));
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function (req, res) {
-  res.send('Hello World')
-});
+// app.get('/', function (req, res) {
+//   res.send('Hello World');
+// });
 
 var port = process.env.PORT || 8999;
 app.listen(port, function() {
