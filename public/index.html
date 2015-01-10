@@ -40,23 +40,23 @@
       padding: 10px 0;
     }
 
-    .user-item {
+    .task:first-child {
+      border-top: 1px solid #000;
+    }
+    .task {
       width: 100%;
       height: 10px;
       border: 1px solid #000;
-      background: #ccc;
-      margin-top: -1px;
-    }
-    .user-item.bugs {
+      border-top: none;
       opacity: .5;
+    }
+    .task.bugs {
       background-color: #EA5E47;
     }
-    .user-item.chores {
-      opacity: .5;
+    .task.chores {
       background-color: #4D4843;
     }
-    .user-item.features {
-      opacity: .5;
+    .task.features {
       background-color: #1CAD7E;
     }
 
@@ -93,30 +93,30 @@
   <script id="user-stats-template-2" type="text/x-handlebars-template">
     {{#each data}}
     <div class="user">
-      <div class="current">
+      <div class="tasks current">
         {{#each this.current.bugs}}
-          <div class="user-item bugs"></div>
+          <div class="task bugs"></div>
         {{/each}}
         {{#each this.current.chores}}
-          <div class="user-item chores"></div>
+          <div class="task chores"></div>
         {{/each}}
         {{#each this.current.features}}
-          <div class="user-item features" style="height: {{math this.estimate "*" 10 }}px;"></div>
+          <div class="task features" style="height: {{math this.estimate "*" 10 }}px;"></div>
         {{/each}}
       </div>
 
       <!-- <p>{{ this.name }}</p> -->
       <div class="user-meta">{{ this.initials }}</div>
 
-      <div class="backlog">
+      <div class="tasks backlog">
         {{#each this.backlog.features}}
-          <div class="user-item features" style="height: {{math this.estimate "*" 10 }}px;"></div>
+          <div class="task features" style="height: {{math this.estimate "*" 10 }}px;"></div>
         {{/each}}
         {{#each this.backlog.chores}}
-          <div class="user-item chores"></div>
+          <div class="task chores"></div>
         {{/each}}
         {{#each this.backlog.bugs}}
-          <div class="user-item bugs"></div>
+          <div class="task bugs"></div>
         {{/each}}
       </div>
 
