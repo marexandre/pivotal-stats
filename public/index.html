@@ -2,10 +2,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Pivotal Stats</title>
-  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="http://code.highcharts.com/highcharts.js"></script>
-  <script src="http://code.highcharts.com/modules/exporting.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">
   <style type="text/css">
+    *,
+    *:before,
+    *:after {
+      -webkit-box-sizing: border-box;
+         -moz-box-sizing: border-box;
+              box-sizing: border-box;
+    }
+
     .wrapper {
       margin: 0 auto;
       width: 900px;
@@ -26,17 +32,50 @@
 
     .user {
       display: inline-block;
-      border: 1px solid #eee;
-      padding: 6px;
       margin: 4px;
+      width: 40px;
+      text-align: center;
+    }
+    .user-meta {
+      padding: 10px 0;
+    }
+
+    .user-item {
+      width: 100%;
+      height: 10px;
+      border: 1px solid #000;
+      background: #ccc;
+      margin-top: -1px;
+    }
+    .user-item.bugs {
+      opacity: .5;
+      background-color: #EA5E47;
+    }
+    .user-item.chores {
+      opacity: .5;
+      background-color: #4D4843;
+    }
+    .user-item.features {
+      opacity: .5;
+      background-color: #1CAD7E;
+    }
+
+    .clearfix:after {
+      content: "";
+      display: table;
+      clear: both;
     }
 
   </style>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="http://code.highcharts.com/modules/exporting.js"></script>
 </head>
 <body>
 
   <div class="wrapper">
-    <div class="project">
+    <div class="project clearfix">
       <div id="container1" class="pie">Loading...</div>
       <div id="container2" class="pie">Loading...</div>
       <div id="container3" class="pie">Loading...</div>
@@ -45,7 +84,60 @@
     <div class="users"></div>
   </div>
 
+  <script id="user-stats-template" type="text/x-handlebars-template">
+    {{#each people}}
+      {{@key}}: {{this}}
+    {{/each}}
+  </script>
+
+  <script id="user-stats-template-2" type="text/x-handlebars-template">
+    {{#each data}}
+    <div class="user">
+      <div class="current">
+        {{#each this.current.bugs}}
+          <div class="user-item bugs"></div>
+        {{/each}}
+        {{#each this.current.chores}}
+          <div class="user-item chores"></div>
+        {{/each}}
+        {{#each this.current.features}}
+          <div class="user-item features" style="height: {{math this.estimate "*" 10 }}px;"></div>
+        {{/each}}
+      </div>
+
+      <!-- <p>{{ this.name }}</p> -->
+      <div class="user-meta">{{ this.initials }}</div>
+
+      <div class="backlog">
+        {{#each this.backlog.features}}
+          <div class="user-item features" style="height: {{math this.estimate "*" 10 }}px;"></div>
+        {{/each}}
+        {{#each this.backlog.chores}}
+          <div class="user-item chores"></div>
+        {{/each}}
+        {{#each this.backlog.bugs}}
+          <div class="user-item bugs"></div>
+        {{/each}}
+      </div>
+
+    </div>
+    {{/each}}
+  </script>
+
   <script type="text/javascript">
+    Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
+      lvalue = parseFloat(lvalue);
+      rvalue = parseFloat(rvalue);
+
+      return {
+        "+": lvalue + rvalue,
+        "-": lvalue - rvalue,
+        "*": lvalue * rvalue,
+        "/": lvalue / rvalue,
+        "%": lvalue % rvalue
+      }[operator];
+    });
+
 
     var initHighcharts = function($target, type, data) {
       $target.highcharts({
@@ -114,30 +206,11 @@
     var createUserStats = function(data) {
       var html = [];
 
-      for (var key in data) {
-        var h = ''+
-          '<div class="user">'+
-            // '<p>'+ data[key].name +'</p>'+
-            '<p>'+ data[key].initials +'</p>'+
-            '<p>'+ createStatsByType(data[key].current, 'current') +'</p>'+
-            '<p>'+ createStatsByType(data[key].backlog, 'backlog') +'</p>'+
-          '</div>';
-        html.push(h);
-      }
-
-      $('.users').html(html.join(''));
+      var source   = $('#user-stats-template-2').html();
+      var template = Handlebars.compile(source);
+      var html     = template(data);
+      $('.users').html(html);
     };
-
-    var createStatsByType = function(data, type) {
-      var h = [];
-
-      for (var key in data) {
-        h.push(key +': '+ data[key].length);
-      }
-
-      return '<b>'+ type +'</b><br>' + h.join(',');
-    };
-
 
     $(function() {
       createGraph($('#container1'), 'backlog');
@@ -149,7 +222,7 @@
         type: 'GET',
         dataType: 'json'
       }).done(function(res) {
-        createUserStats(res.data);
+        createUserStats(res);
       });
 
     });
