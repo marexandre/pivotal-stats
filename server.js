@@ -9,7 +9,8 @@ var API = require('./api/api');
  */
 var api = express()
   .get('/projects', API.projects)
-  .get('/iterations/:type', API.iterations)
+  .get('/iterations/:type', API.iterationsByType)
+  .get('/iterations/:project/:type', API.iterations)
   .get('/user_stats', API.userStats);
 
 /**
@@ -23,6 +24,10 @@ app.use(express.static(__dirname + '/public'));
 // app.get('/', function (req, res) {
 //   res.send('Hello World');
 // });
+
+app.get('/projects', function (req, res) {
+  res.sendfile('./public/projects.html');
+});
 
 var port = process.env.PORT || 8999;
 app.listen(port, function() {

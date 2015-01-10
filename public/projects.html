@@ -1,0 +1,82 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pivotal Stats</title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">
+  <link rel="stylesheet" type="text/css" href="css/app.css">
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+
+  <div class="wrapper"></div>
+
+  <script id="projects-template" type="text/x-handlebars-template">
+    {{#each this}}
+      <div id="{{ name }}" class="project">
+        <h2>{{ name }}: {{ id }}</h2>
+        <div class="clearfix">
+          <div class="backlog pie">Loading...</div>
+          <div class="current pie">Loading...</div>
+          <div class="done pie">Loading...</div>
+        </div>
+      </div>
+    {{/each}}
+  </script>
+
+  <script src="javascript/helpers.js"></script>
+  <script type="text/javascript">
+    var getProjects = function(cb) {
+      $.ajax({
+        url: 'http://localhost:8999/api/projects',
+        type: 'GET',
+        dataType: 'json'
+      }).done(function(res) {
+        cb(res.data);
+      });
+    };
+
+    var getProjectIterations = function(data, type, cb) {
+      $.ajax({
+        url: 'http://localhost:8999/api/iterations/'+ data.id +'/'+ type,
+        type: 'GET',
+        dataType: 'json'
+      }).done(function(res) {
+        var obj = res.data;
+        obj.name = data.name;
+        cb(obj);
+      });
+    }
+
+    var getGraph = function(data, type) {
+      getProjectIterations(data, type, function(d) {
+        initHighcharts($('#'+ d.name).find('.'+ type), type, d);
+      });
+    };
+
+    $(function() {
+      getProjects(function(data) {
+        console.log(data);
+
+        var source   = $('#projects-template').html();
+        var template = Handlebars.compile(source);
+        var html     = template(data);
+        $('.wrapper').html(html);
+
+        for (var i = 0, imax = data.length; i < imax; i++) {
+          getGraph(data[i], 'backlog');
+          getGraph(data[i], 'current');
+          getGraph(data[i], 'done');
+        }
+
+      });
+    });
+  </script>
+
+
+</body>
+</html>

@@ -51,8 +51,8 @@ var getIterationsProgress = function(data) {
 };
 
 
-// GET iterations/:type
-exports.iterations = function(req, res) {
+// GET /iterations/:type
+exports.iterationsByType = function(req, res) {
   var type = req.params.type;
 
   if (! utils.isValidIterationsType(type)) {
@@ -62,6 +62,41 @@ exports.iterations = function(req, res) {
   pivotal.getIterations(projectID, type, function(error, data) {
     if (error) {
       res.json(error);
+      return;
+    }
+
+    var obj = getIterationsProgress(data[0].stories);
+    res.json({ data: obj });
+  });
+};
+
+
+// GET /iterations/:project/:type
+exports.iterations = function(req, res) {
+  var project = req.params.project;
+  var type = req.params.type;
+
+  console.log(project);
+  console.log(type);
+
+  if (! utils.isValidIterationsType(type)) {
+    return res.json({ message: type + ' is invalid iterations type' });
+  }
+
+  pivotal.getIterations(project, type, function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
+
+    if (data.length === 0) {
+      res.json({ data: {
+          total   : 0,
+          features: 0,
+          chores  : 0,
+          bugs    : 0
+        }
+      });
       return;
     }
 

@@ -57,7 +57,22 @@
     {{/each}}
   </script>
 
-  <script src="javascript/app.js"></script>
+  <script src="javascript/helpers.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      createGraph($('#container1'), 'backlog');
+      createGraph($('#container2'), 'current');
+      createGraph($('#container3'), 'done');
+
+      $.ajax({
+        url: 'http://localhost:8999/api/user_stats',
+        type: 'GET',
+        dataType: 'json'
+      }).done(function(res) {
+        createUserStats(res);
+      });
+    });
+  </script>
 
 </body>
 </html>
