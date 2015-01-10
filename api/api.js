@@ -1,19 +1,26 @@
-
-var config = require('../config.json');
-
 var _ = require('underscore');
-// var helper = require('../helpers/helpers');
 var utils = require('./utils');
-var iterations = require('./iterations');
 
-var tracker = require('pivotaltracker');
-var client = new tracker.Client(config.token);
+var pivotal = require('./pivotal');
+var config = require('../config.json');
 var projectID = config.project_id;
+
+
+exports.projects = function(req, res) {
+  pivotal.getProjects(function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
+
+    res.json({ data: data });
+  });
+};
 
 
 /**
  * getIterationsProgress returnes an object with each iteration type counts
- * @param  {Object} data Stories object that is returend from iterations.getIterations
+ * @param  {Object} data Stories object that is returend from pivotal.getIterations
  * @return {Object}      Object containing each iteration type count
  */
 var getIterationsProgress = function(data) {
@@ -52,9 +59,13 @@ exports.iterations = function(req, res) {
     return res.json({ message: type + ' is invalid iterations type' });
   }
 
-  iterations.getIterations(projectID, type, function(error, data) {
-    var obj = getIterationsProgress(data[0].stories);
+  pivotal.getIterations(projectID, type, function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
 
+    var obj = getIterationsProgress(data[0].stories);
     res.json({ data: obj });
   });
 };
@@ -123,7 +134,12 @@ var generateUserData = function(type, data) {
 
 // GET /user_stats
 exports.userStats = function(req, res) {
-  iterations.getIterations(projectID, 'current_backlog', function(error, data) {
+  pivotal.getIterations(projectID, 'current_backlog', function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
+
     // var obj = data;
     var current = generateUserData('current', data[0].stories);
     var backlog = generateUserData('backlog', data[1].stories);

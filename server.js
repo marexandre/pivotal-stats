@@ -8,6 +8,7 @@ var API = require('./api/api');
  * API
  */
 var api = express()
+  .get('/projects', API.projects)
   .get('/iterations/:type', API.iterations)
   .get('/user_stats', API.userStats);
 
