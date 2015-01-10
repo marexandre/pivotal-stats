@@ -13,12 +13,12 @@
 </head>
 <body>
 
-  <div class="wrapper"></div>
+  <div class="wrapper projects"></div>
 
   <script id="projects-template" type="text/x-handlebars-template">
     {{#each this}}
       <div id="{{ name }}" class="project">
-        <h2>{{ name }}: {{ id }}</h2>
+        <h3>{{ name }}: {{ id }}</h3>
         <div class="clearfix">
           <div class="backlog pie">Loading...</div>
           <div class="current pie">Loading...</div>

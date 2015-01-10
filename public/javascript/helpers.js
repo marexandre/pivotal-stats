@@ -13,7 +13,12 @@ Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
 
 var initHighcharts = function($target, type, data) {
   $target.highcharts({
-    title: { text: type + ': '+ data.total },
+    title: {
+      text: type + ': '+ data.total,
+      style: {
+        fontSize: 14
+      }
+    },
     exporting: { enabled: false },
     credits: { enabled: false },
     // tooltip: { enabled: false },

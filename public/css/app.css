@@ -20,6 +20,17 @@
   color: #999;
 }
 
+.projects {
+  width: 960px;
+}
+.projects .pie {
+  min-width: 160px;
+  height: 160px;
+}
+.projects .project {
+  float: left;
+}
+
 .users {
   margin-top: 30px;
 }
