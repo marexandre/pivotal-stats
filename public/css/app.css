@@ -44,6 +44,11 @@
   border-top: none;
   opacity: .5;
 }
+
+.task.accepted {
+  opacity: .2;
+}
+
 .task.bugs {
   background-color: #EA5E47;
 }

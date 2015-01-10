@@ -105,20 +105,20 @@ var generateUserData = function(type, data) {
       case 'feature':
         users[d.ownedById][type].features.push({
           'id': d.id,
-          'state': d.current_state,
+          'state': d.currentState,
           'estimate': d.estimate
         });
         break;
       case 'chore':
         users[d.ownedById][type].chores.push({
           'id': d.id,
-          'state': d.current_state
+          'state': d.currentState
         });
         break;
       case 'bug':
         users[d.ownedById][type].bugs.push({
           'id': d.id,
-          'state': d.current_state
+          'state': d.currentState
         });
         break;
     }

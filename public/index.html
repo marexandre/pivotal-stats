@@ -28,13 +28,13 @@
     <div class="user">
       <div class="tasks current">
         {{#each this.current.bugs}}
-          <div class="task bugs"></div>
+          <div class="task bugs {{this.state}}"></div>
         {{/each}}
         {{#each this.current.chores}}
-          <div class="task chores"></div>
+          <div class="task chores {{this.state}}"></div>
         {{/each}}
         {{#each this.current.features}}
-          <div class="task features" style="height: {{math this.estimate "*" 10 }}px;"></div>
+          <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
         {{/each}}
       </div>
 
@@ -43,13 +43,13 @@
 
       <div class="tasks backlog">
         {{#each this.backlog.features}}
-          <div class="task features" style="height: {{math this.estimate "*" 10 }}px;"></div>
+          <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
         {{/each}}
         {{#each this.backlog.chores}}
-          <div class="task chores"></div>
+          <div class="task chores {{this.state}}"></div>
         {{/each}}
         {{#each this.backlog.bugs}}
-          <div class="task bugs"></div>
+          <div class="task bugs {{this.state}}"></div>
         {{/each}}
       </div>
 
