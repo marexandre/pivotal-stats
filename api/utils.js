@@ -4,24 +4,6 @@ exports.isValidIterationsType = function(t) {
 };
 
 /**
- * merge merges  multiple objects into one
- * @return {Object} Merged object
- */
-var merge = function() {
-  var obj = {};
-  var key;
-  for (var i = 0, imax; i < arguments.length; i++) {
-    for (key in arguments[i]) {
-      if (arguments[i].hasOwnProperty(key)) {
-        obj[key] = arguments[i][key];
-      }
-    }
-  }
-  return obj;
-};
-exports.merge = merge;
-
-/**
  * [flatten description]
  * @param  {[type]} list [description]
  * @return {[type]}      [description]
@@ -29,16 +11,38 @@ exports.merge = merge;
 var flatten = function(list) {
   for (var key in list) {
     var l = list[key];
-    var tmp = {};
+
+    var current = {
+      features: [],
+      chores: [],
+      bugs: []
+    };
+    var backlog = {
+      features: [],
+      chores: [],
+      bugs: []
+    };
 
     for (var i = 0, imax = l.length; i < imax; i++) {
-      if (imax === 1) {
-        tmp = merge(tmp, l[i]);
-      } else {
-        tmp = merge(tmp, l[i], l[i + 1]);
+      if (l[i].hasOwnProperty('current')) {
+        current.features =  current.features.concat(l[i].current.features);
+        current.chores = current.chores.concat(l[i].current.chores);
+        current.bugs = current.bugs.concat(l[i].current.bugs);
+      }
+      if (l[i].hasOwnProperty('backlog')) {
+        backlog.features =  backlog.features.concat(l[i].backlog.features);
+        backlog.chores = backlog.chores.concat(l[i].backlog.chores);
+        backlog.bugs = backlog.bugs.concat(l[i].backlog.bugs);
       }
     }
-    list[key] = tmp;
+
+    list[key] = {
+      id: l[0].id,
+      name: l[0].name,
+      initials: l[0].initials,
+      current: current,
+      backlog: backlog
+    };
   }
 
   return list;

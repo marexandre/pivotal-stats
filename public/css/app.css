@@ -38,10 +38,11 @@
 .user {
   display: inline-block;
   margin: 4px;
-  width: 40px;
+  width: 30px;
   text-align: center;
 }
 .user-meta {
+  font-size: 12px;
   padding: 10px 0;
 }
 
