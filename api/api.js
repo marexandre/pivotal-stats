@@ -14,6 +14,10 @@ exports.projects = function(req, res) {
       return;
     }
 
+    data = _.sortBy(data, function(o) {
+      return o.id;
+    });
+
     res.json({ data: data });
   });
 };
