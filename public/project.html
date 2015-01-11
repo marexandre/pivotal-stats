@@ -17,53 +17,6 @@
     <div class="users"></div>
   </div>
 
-  <script id="projects-template" type="text/x-handlebars-template">
-    {{#each this}}
-      <div id="{{ name }}" class="project">
-        <h3>{{ name }}: {{ id }}</h3>
-        <div class="clearfix">
-          <div class="backlog pie">Loading...</div>
-          <div class="current pie">Loading...</div>
-          <div class="done pie">Loading...</div>
-        </div>
-      </div>
-    {{/each}}
-  </script>
-
-  <script id="user-stats-template-2" type="text/x-handlebars-template">
-    {{#each data}}
-    <div class="user">
-      <div class="tasks current">
-        {{#each this.current.bugs}}
-          <div class="task bugs {{this.state}}"></div>
-        {{/each}}
-        {{#each this.current.chores}}
-          <div class="task chores {{this.state}}"></div>
-        {{/each}}
-        {{#each this.current.features}}
-          <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-        {{/each}}
-      </div>
-
-      <!-- <p>{{ this.name }}</p> -->
-      <div class="user-meta">{{ this.initials }}</div>
-
-      <div class="tasks backlog">
-        {{#each this.backlog.features}}
-          <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-        {{/each}}
-        {{#each this.backlog.chores}}
-          <div class="task chores {{this.state}}"></div>
-        {{/each}}
-        {{#each this.backlog.bugs}}
-          <div class="task bugs {{this.state}}"></div>
-        {{/each}}
-      </div>
-
-    </div>
-    {{/each}}
-  </script>
-
   <script src="/javascript/helpers.js"></script>
   <script type="text/javascript">
 
@@ -78,28 +31,24 @@
       });
     };
 
-    var getGraph = function(data, type) {
-      getProjectIteration(data, type, function(d) {
-        initHighcharts($('#'+ d.name).find('.'+ type), type, d);
-      });
-    };
-
     $(function() {
-
       var fullUrl = document.URL;
       var urlArray = fullUrl.split('/');
       var projectID = urlArray[urlArray.length-1];
       console.log( projectID );
 
       getProjectData(projectID, function(data) {
-        var source   = $('#projects-template').html();
-        var template = Handlebars.compile(source);
-        var html     = template([data]);
-        $('.wrapper').prepend(html);
 
-        getGraph(data, 'backlog');
-        getGraph(data, 'current');
-        getGraph(data, 'done');
+        getTemplate('projects-template.handlebars', function(source) {
+          var template = Handlebars.compile(source);
+          var html     = template([data]);
+          $('.wrapper').prepend(html);
+
+          getGraph(data, 'backlog');
+          getGraph(data, 'current');
+          getGraph(data, 'done');
+        });
+
       });
 
       getUserStats(projectID, function(data) {

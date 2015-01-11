@@ -1,0 +1,27 @@
+{{#each this}}
+  <div id="{{ name }}" class="project">
+    <h3>
+      <a href="/project/{{ id }}" target="_blank">{{ name }}: {{ id }}</a>
+    </h3>
+    <div class="pies clearfix">
+      <div class="backlog clearfix">
+        <p class="total">backlog: <span class="total-count"></span></p>
+        <div class="pie">
+          Loading...
+        </div>
+      </div>
+      <div class="current clearfix">
+        <p class="total">current: <span class="total-count"></span></p>
+        <div class="pie">
+          Loading...
+        </div>
+      </div>
+      <div class="done clearfix">
+        <p class="total">done: <span class="total-count"></span></p>
+        <div class="pie">
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}

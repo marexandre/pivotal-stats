@@ -13,12 +13,7 @@ Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
 
 var initHighcharts = function($target, type, data) {
   $target.highcharts({
-    title: {
-      text: type + ': '+ data.total,
-      style: {
-        fontSize: 14
-      }
-    },
+    title: { text: '' },
     exporting: { enabled: false },
     credits: { enabled: false },
     // tooltip: { enabled: false },
@@ -27,6 +22,7 @@ var initHighcharts = function($target, type, data) {
     },
     plotOptions: {
       pie: {
+        size: '100%',
         animation: false,
         allowPointSelect: false,
         cursor: null,
@@ -43,7 +39,12 @@ var initHighcharts = function($target, type, data) {
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: null,
-      plotShadow: false
+      plotShadow: false,
+      margin: [0, 0, 0, 0],
+      spacingTop: 0,
+      spacingBottom: 0,
+      spacingLeft: 0,
+      spacingRight: 0
     },
     series: [{
       showInLegend: false,
@@ -98,15 +99,33 @@ var createGraph = function($target, id, type) {
     type: 'GET',
     dataType: 'json'
   }).done(function(res) {
-    initHighcharts($target, type, res.data);
+    initHighcharts($target.find('.pie'), type, res.data);
   });
 };
 
 var createUserStats = function(data) {
   var html = [];
 
-  var source   = $('#user-stats-template-2').html();
-  var template = Handlebars.compile(source);
-  var html     = template(data);
-  $('.users').html(html);
+  getTemplate('user-stats-template.handlebars', function(source) {
+    var template = Handlebars.compile(source);
+    var html     = template(data);
+    $('.users').html(html);
+  });
+};
+
+var getGraph = function(data, type) {
+  getProjectIteration(data, type, function(d) {
+    var $t = $('#'+ d.name).find('.'+ type);
+    $t.find('.total-count').html(d.total);
+    initHighcharts($t.find('.pie'), type, d);
+  });
+};
+
+var getTemplate = function(name, cb) {
+  $.ajax({
+    url: '/handlebars/'+ name,
+    type: 'GET'
+  }).done(function(res) {
+    cb(res);
+  });
 };

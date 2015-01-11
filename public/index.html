@@ -13,22 +13,7 @@
 </head>
 <body>
 
-  <div class="wrapper projects"></div>
-
-  <script id="projects-template" type="text/x-handlebars-template">
-    {{#each this}}
-      <div id="{{ name }}" class="project">
-        <h3>
-          <a href="/project/{{ id }}" target="_blank">{{ name }}: {{ id }}</a>
-        </h3>
-        <div class="clearfix">
-          <div class="backlog pie">Loading...</div>
-          <div class="current pie">Loading...</div>
-          <div class="done pie">Loading...</div>
-        </div>
-      </div>
-    {{/each}}
-  </script>
+  <div class="wrapper projects clearfix"></div>
 
   <script src="javascript/helpers.js"></script>
   <script type="text/javascript">
@@ -42,28 +27,24 @@
       });
     };
 
-    var getGraph = function(data, type) {
-      getProjectIteration(data, type, function(d) {
-        initHighcharts($('#'+ d.name).find('.'+ type), type, d);
-      });
-    };
-
     $(function() {
       getProjects(function(data) {
         console.log(data);
 
-        var source   = $('#projects-template').html();
-        var template = Handlebars.compile(source);
-        var html     = template(data);
-        $('.wrapper').html(html);
+        getTemplate('projects-template.handlebars', function(source) {
+          var template = Handlebars.compile(source);
+          var html     = template(data);
+          $('.wrapper').prepend(html);
 
-        for (var i = 0, imax = data.length; i < imax; i++) {
-          getGraph(data[i], 'backlog');
-          getGraph(data[i], 'current');
-          getGraph(data[i], 'done');
-        }
+          for (var i = 0, imax = data.length; i < imax; i++) {
+            getGraph(data[i], 'backlog');
+            getGraph(data[i], 'current');
+            getGraph(data[i], 'done');
+          }
+        });
 
       });
+
     });
   </script>
 
