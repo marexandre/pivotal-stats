@@ -13,66 +13,60 @@
 </head>
 <body>
 
-  <div class="wrapper">
-    <div class="project clearfix">
-      <div id="container1" class="pie">Loading...</div>
-      <div id="container2" class="pie">Loading...</div>
-      <div id="container3" class="pie">Loading...</div>
-    </div>
+  <div class="wrapper projects"></div>
 
-    <div class="users"></div>
-  </div>
-
-  <script id="user-stats-template-2" type="text/x-handlebars-template">
-    {{#each data}}
-    <div class="user">
-      <div class="tasks current">
-        {{#each this.current.bugs}}
-          <div class="task bugs {{this.state}}"></div>
-        {{/each}}
-        {{#each this.current.chores}}
-          <div class="task chores {{this.state}}"></div>
-        {{/each}}
-        {{#each this.current.features}}
-          <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-        {{/each}}
+  <script id="projects-template" type="text/x-handlebars-template">
+    {{#each this}}
+      <div id="{{ name }}" class="project">
+        <h3>
+          <a href="/project/{{ id }}" target="_blank">{{ name }}: {{ id }}</a>
+        </h3>
+        <div class="clearfix">
+          <div class="backlog pie">Loading...</div>
+          <div class="current pie">Loading...</div>
+          <div class="done pie">Loading...</div>
+        </div>
       </div>
-
-      <!-- <p>{{ this.name }}</p> -->
-      <div class="user-meta">{{ this.initials }}</div>
-
-      <div class="tasks backlog">
-        {{#each this.backlog.features}}
-          <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-        {{/each}}
-        {{#each this.backlog.chores}}
-          <div class="task chores {{this.state}}"></div>
-        {{/each}}
-        {{#each this.backlog.bugs}}
-          <div class="task bugs {{this.state}}"></div>
-        {{/each}}
-      </div>
-
-    </div>
     {{/each}}
   </script>
 
   <script src="javascript/helpers.js"></script>
   <script type="text/javascript">
-    $(function() {
-      createGraph($('#container1'), 'backlog');
-      createGraph($('#container2'), 'current');
-      createGraph($('#container3'), 'done');
-
+    var getProjects = function(cb) {
       $.ajax({
-        url: 'http://localhost:8999/api/user_stats',
+        url: 'http://localhost:8999/api/projects',
         type: 'GET',
         dataType: 'json'
       }).done(function(res) {
-        createUserStats(res);
+        cb(res.data);
+      });
+    };
+
+    var getGraph = function(data, type) {
+      getProjectIteration(data, type, function(d) {
+        initHighcharts($('#'+ d.name).find('.'+ type), type, d);
+      });
+    };
+
+    $(function() {
+      getProjects(function(data) {
+        console.log(data);
+
+        var source   = $('#projects-template').html();
+        var template = Handlebars.compile(source);
+        var html     = template(data);
+        $('.wrapper').html(html);
+
+        for (var i = 0, imax = data.length; i < imax; i++) {
+          getGraph(data[i], 'backlog');
+          getGraph(data[i], 'current');
+          getGraph(data[i], 'done');
+        }
+
       });
     });
   </script>
+
 
 </body>
 </html>

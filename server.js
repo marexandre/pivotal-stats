@@ -9,9 +9,9 @@ var API = require('./api/api');
  */
 var api = express()
   .get('/projects', API.projects)
-  .get('/iterations/:type', API.iterationsByType)
+  .get('/project/:id', API.project)
   .get('/iterations/:project/:type', API.iterations)
-  .get('/user_stats', API.userStats)
+  .get('/user_stats/:id', API.userStats)
   .get('/user_full_stats', API.userFullStats);
 
 /**
@@ -26,8 +26,8 @@ app
   // .get('/', function (req, res) {
   //   res.send('Hello World');
   // })
-  .get('/projects', function (req, res) {
-    res.sendfile('./public/projects.html');
+  .get('/project/:id', function (req, res) {
+    res.sendfile('./public/project.html');
   })
   .get('/users', function (req, res) {
     res.sendfile('./public/users.html');

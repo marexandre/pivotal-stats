@@ -70,9 +70,31 @@ var initHighcharts = function($target, type, data) {
   });
 };
 
-var createGraph = function($target, type) {
+var getProjectIteration = function(data, type, cb) {
   $.ajax({
-    url: 'http://localhost:8999/api/iterations/'+ type,
+    url: 'http://localhost:8999/api/iterations/'+ data.id +'/'+ type,
+    type: 'GET',
+    dataType: 'json'
+  }).done(function(res) {
+    var obj = res.data;
+    obj.name = data.name;
+    cb(obj);
+  });
+};
+
+var getUserStats = function(id, cb) {
+  $.ajax({
+    url: 'http://localhost:8999/api/user_stats/'+ id,
+    type: 'GET',
+    dataType: 'json'
+  }).done(function(res) {
+    cb(res);
+  });
+};
+
+var createGraph = function($target, id, type) {
+  $.ajax({
+    url: 'http://localhost:8999/api/iterations/'+ id +'/'+ type,
     type: 'GET',
     dataType: 'json'
   }).done(function(res) {

@@ -3,6 +3,31 @@ var tracker = require('pivotaltracker');
 var client = new tracker.Client(config.token);
 
 /**
+ * getProject get's project data from specified ID
+ * @param  {Int}   id Project id
+ * @param  {Function} cb Callback
+ */
+exports.getProject = function(id, cb) {
+  client.project(id).get(function(error, data) {
+    if (error) {
+      console.log('[ERROR] client.project.get');
+      console.log(error);
+      cb(error, []);
+      return;
+    }
+
+    var obj = {
+      id: data.id,
+      name: data.name,
+      pointScale: data.pointScale,
+      iterationLength: data.iterationLength
+    };
+
+    cb(null, obj);
+  });
+};
+
+/**
  * getProjects get's all the projects basic info from pivotal
  * @param  {Function} cb Callback
  */

@@ -5,11 +5,24 @@ var helper = require('../helpers/helpers');
 
 var pivotal = require('./pivotal');
 var config = require('../config.json');
-var projectID = config.project_id;
 
-
+// GET /projects
 exports.projects = function(req, res) {
   pivotal.getProjects(function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
+
+    res.json({ data: data });
+  });
+};
+
+// GET /project/:id
+exports.project = function(req, res) {
+  var id = req.params.id;
+
+  pivotal.getProject(id, function(error, data) {
     if (error) {
       res.json(error);
       return;
@@ -50,26 +63,6 @@ var getIterationsProgress = function(data) {
     chores  : chore,
     bugs    : bug
   };
-};
-
-
-// GET /iterations/:type
-exports.iterationsByType = function(req, res) {
-  var type = req.params.type;
-
-  if (! utils.isValidIterationsType(type)) {
-    return res.json({ message: type + ' is invalid iterations type' });
-  }
-
-  pivotal.getIterations(projectID, type, function(error, data) {
-    if (error) {
-      res.json(error);
-      return;
-    }
-
-    var obj = getIterationsProgress(data[0].stories);
-    res.json({ data: obj });
-  });
 };
 
 
@@ -205,7 +198,9 @@ var getUserStats = function(id, cb) {
 
 // GET /user_stats
 exports.userStats = function(req, res) {
-  getUserStats(projectID, function(error, data) {
+  var id = req.params.id;
+
+  getUserStats(id, function(error, data) {
     if (error) {
       res.json(error);
       return;
