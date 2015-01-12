@@ -1,55 +1,76 @@
+<div class="current">
+  <div class="hoge user">
+    Current
+  </div>
 {{#each data}}
-<div class="user">
-  {{!-- stories that are at 'accepted' status --}}
-  <div class="tasks current">
-  {{#each this.current.bugs}}
-    {{#if_eq this.state "accepted"}}
-      <div class="task bugs {{this.state}}"></div>
-    {{/if_eq}}
-  {{/each}}
-  {{#each this.current.chores}}
-    {{#if_eq this.state "accepted"}}
-      <div class="task chores {{this.state}}"></div>
-    {{/if_eq}}
-  {{/each}}
-  {{#each this.current.features}}
-    {{#if_eq this.state "accepted"}}
-      <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-    {{/if_eq}}
-  {{/each}}
+  <div class="user">
+    {{!-- stories that are at 'accepted' status --}}
+    <div class="tasks">
+    {{#each this.current.bugs}}
+      {{#if_eq this.state "accepted"}}
+        <div class="task bugs {{this.state}}"></div>
+      {{/if_eq}}
+    {{/each}}
+    {{#each this.current.chores}}
+      {{#if_eq this.state "accepted"}}
+        <div class="task chores {{this.state}}"></div>
+      {{/if_eq}}
+    {{/each}}
+    {{#each this.current.features}}
+      {{#if_eq this.state "accepted"}}
+        <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
+      {{/if_eq}}
+    {{/each}}
+    </div>
+    <div class="tasks">
+    {{#each this.current.bugs}}
+      {{#if_not this.state "accepted"}}
+        <div class="task bugs {{this.state}}"></div>
+      {{/if_not}}
+    {{/each}}
+    {{#each this.current.chores}}
+      {{#if_not this.state "accepted"}}
+        <div class="task chores {{this.state}}"></div>
+      {{/if_not}}
+    {{/each}}
+    {{#each this.current.features}}
+      {{#if_not this.state "accepted"}}
+        <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
+      {{/if_not}}
+    {{/each}}
+    </div>
   </div>
-  <div class="tasks current">
-  {{#each this.current.bugs}}
-    {{#if_not this.state "accepted"}}
-      <div class="task bugs {{this.state}}"></div>
-    {{/if_not}}
-  {{/each}}
-  {{#each this.current.chores}}
-    {{#if_not this.state "accepted"}}
-      <div class="task chores {{this.state}}"></div>
-    {{/if_not}}
-  {{/each}}
-  {{#each this.current.features}}
-    {{#if_not this.state "accepted"}}
-      <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-    {{/if_not}}
-  {{/each}}
-  </div>
-
-  {{!-- <p>{{ this.name }}</p> --}}
-  <div class="user-meta">{{ this.initials }}</div>
-
-  <div class="tasks backlog">
-  {{#each this.backlog.features}}
-    <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
-  {{/each}}
-  {{#each this.backlog.chores}}
-    <div class="task chores {{this.state}}"></div>
-  {{/each}}
-  {{#each this.backlog.bugs}}
-    <div class="task bugs {{this.state}}"></div>
-  {{/each}}
-  </div>
-
-</div>
 {{/each}}
+</div>
+
+<div class="user-names">
+  <div class="hoge user">
+    <div class="user-meta"> </div>
+  </div>
+{{#each data}}
+  <div class="user">
+    <div class="user-meta">{{ this.initials }}</div>
+  </div>
+{{/each}}
+</div>
+
+<div class="backlog">
+  <div class="hoge user">
+    Backlog
+  </div>
+{{#each data}}
+  <div class="user">
+    <div class="tasks">
+    {{#each this.backlog.features}}
+      <div class="task features {{this.state}}" style="height: {{math this.estimate "*" 10 }}px;"></div>
+    {{/each}}
+    {{#each this.backlog.chores}}
+      <div class="task chores {{this.state}}"></div>
+    {{/each}}
+    {{#each this.backlog.bugs}}
+      <div class="task bugs {{this.state}}"></div>
+    {{/each}}
+    </div>
+  </div>
+{{/each}}
+</div>
