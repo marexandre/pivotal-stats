@@ -1,6 +1,20 @@
+'use strict';
+
 var config = require('../config.json');
 var tracker = require('pivotaltracker');
 var client = new tracker.Client(config.token);
+
+
+var getProjectResponseData = function(data) {
+  return {
+    id: data.id,
+    name: data.name,
+    startDate: data.startDate,
+    startTime: data.startTime,
+    pointScale: data.pointScale,
+    iterationLength: data.iterationLength
+  };
+};
 
 /**
  * getProject get's project data from specified ID
@@ -16,14 +30,7 @@ exports.getProject = function(id, cb) {
       return;
     }
 
-    var obj = {
-      id: data.id,
-      name: data.name,
-      pointScale: data.pointScale,
-      iterationLength: data.iterationLength
-    };
-
-    cb(null, obj);
+    cb(null, getProjectResponseData(data));
   });
 };
 
@@ -41,13 +48,8 @@ exports.getProjects = function(cb) {
     }
 
     var list = [];
-    data.forEach(function(o) {
-      list.push({
-        id: o.id,
-        name: o.name,
-        pointScale: o.pointScale,
-        iterationLength: o.iterationLength
-      });
+    data.forEach(function(obj) {
+      list.push(getProjectResponseData(obj));
     });
 
     cb(null, list);
