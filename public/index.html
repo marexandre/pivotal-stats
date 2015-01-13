@@ -15,6 +15,8 @@
 
   <div class="wrapper projects clearfix"></div>
 
+  <div class="users" style="width: 1180px; margin: 0 auto; margin-bottom: 100px;"></div>
+
   <script src="javascript/helpers.js"></script>
   <script type="text/javascript">
     var getProjects = function(cb) {
@@ -43,6 +45,14 @@
           }
         });
 
+      });
+
+      $.ajax({
+        url: 'http://localhost:8999/api/user_full_stats',
+        type: 'GET',
+        dataType: 'json'
+      }).done(function(res) {
+        createUserStats(res);
       });
 
     });
