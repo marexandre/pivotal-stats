@@ -3,6 +3,9 @@
 var express = require('express');
 var morgan = require('morgan');
 var API = require('./api/api');
+var ECT = require('ect');
+var ectRenderer = ECT({ watch: true, root: __dirname + '/views', ext : '.ect' });
+
 
 /**
  * API
@@ -23,14 +26,16 @@ app.use(morgan('dev', { immediate: true }));
 app.use(express.static(__dirname + '/public'));
 
 app
-  // .get('/', function (req, res) {
-  //   res.send('Hello World');
-  // })
+  .engine('ect', ectRenderer.render)
+  .set('view engine', 'ect')
+  .get('/', function (req, res){
+    res.render('index');
+  })
   .get('/project/:id', function (req, res) {
-    res.sendfile('./public/project.html');
+    res.render('project');
   })
   .get('/users', function (req, res) {
-    res.sendfile('./public/users.html');
+    res.render('users');
   })
 
 var port = process.env.PORT || 8999;

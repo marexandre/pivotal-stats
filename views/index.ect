@@ -1,0 +1,45 @@
+<% extend 'layout' %>
+
+<div class="wrapper projects clearfix"></div>
+
+<div class="users" style="width: 1180px; margin: 0 auto; margin-bottom: 100px;"></div>
+
+<% include 'handlebars/projects-template.ect' %>
+<% include 'handlebars/user-stats-template' %>
+
+<script src="/javascript/helpers.js"></script>
+<script type="text/javascript">
+  var getProjects = function(cb) {
+    $.ajax({
+      url: '/api/projects',
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+      cb(res.data);
+    });
+  };
+
+  $(function() {
+    getProjects(function(data) {
+      var source = $("#projects-template").html();
+      var template = Handlebars.compile(source);
+      var html     = template(data);
+      $('.wrapper').prepend(html);
+
+      for (var i = 0, imax = data.length; i < imax; i++) {
+        getGraph(data[i], 'backlog');
+        getGraph(data[i], 'current');
+        getGraph(data[i], 'done');
+      }
+    });
+
+    $.ajax({
+      url: '/api/user_full_stats',
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+      createUserStats(res);
+    });
+
+  });
+</script>

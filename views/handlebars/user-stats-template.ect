@@ -1,0 +1,74 @@
+<script id="user-stats-template" type="text/x-handlebars-template">
+  <div class="current">
+    <div class="hoge user">
+      Current
+    </div>
+  {{#each data}}
+    <div class="user">
+      {{!-- stories that are at 'accepted' status --}}
+      <div class="tasks">
+      {{#each this.current.bugs}}
+        {{#if_eq this.currentState "accepted"}}
+          <% include 'handlebars/_includes/task' %>
+        {{/if_eq}}
+      {{/each}}
+      {{#each this.current.chores}}
+        {{#if_eq this.currentState "accepted"}}
+          <% include 'handlebars/_includes/task' %>
+        {{/if_eq}}
+      {{/each}}
+      {{#each this.current.features}}
+        {{#if_eq this.currentState "accepted"}}
+          <% include 'handlebars/_includes/task' %>
+        {{/if_eq}}
+      {{/each}}
+      </div>
+      <div class="tasks">
+      {{#each this.current.bugs}}
+        {{#if_not this.currentState "accepted"}}
+          <% include 'handlebars/_includes/task' %>
+        {{/if_not}}
+      {{/each}}
+      {{#each this.current.chores}}
+        {{#if_not this.currentState "accepted"}}
+          <% include 'handlebars/_includes/task' %>
+        {{/if_not}}
+      {{/each}}
+      {{#each this.current.features}}
+        {{#if_not this.currentState "accepted"}}
+          <% include 'handlebars/_includes/task' %>
+        {{/if_not}}
+      {{/each}}
+      </div>
+    </div>
+  {{/each}}
+  </div>
+
+  <div class="user-names">
+    <div class="hoge user">
+      <div class="user-meta"> </div>
+    </div>
+  {{#each data}}
+    <div class="user">
+      <div class="user-meta" title="{{ this.name }}">{{ this.initials }}</div>
+    </div>
+  {{/each}}
+  </div>
+
+  <div class="backlog">
+    <div class="hoge user">
+      Backlog
+    </div>
+  {{#each data}}
+    <div class="user">
+      <div class="tasks">
+      {{#each this.backlog}}
+        {{#each this}}
+          <% include 'handlebars/_includes/task' %>
+        {{/each}}
+      {{/each}}
+      </div>
+    </div>
+  {{/each}}
+  </div>
+</script>

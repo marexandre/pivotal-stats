@@ -1,0 +1,45 @@
+<% extend 'layout' %>
+
+<div class="wrapper">
+  <div class="users"></div>
+</div>
+
+<% include 'handlebars/projects-template.ect' %>
+<% include 'handlebars/user-stats-template' %>
+
+<script src="/javascript/helpers.js"></script>
+<script type="text/javascript">
+
+  var getProjectData = function(id, cb) {
+    $.ajax({
+      url: '/api/project/'+ id,
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+      var obj = res.data;
+      cb(obj);
+    });
+  };
+
+  $(function() {
+    var fullUrl = document.URL;
+    var urlArray = fullUrl.split('/');
+    var projectID = urlArray[urlArray.length-1];
+    console.log( projectID );
+
+    getProjectData(projectID, function(data) {
+      var source = $("#projects-template").html();
+      var template = Handlebars.compile(source);
+      var html     = template([data]);
+      $('.wrapper').prepend(html);
+
+      getGraph(data, 'backlog');
+      getGraph(data, 'current');
+      getGraph(data, 'done');
+    });
+
+    getUserStats(projectID, function(data) {
+      createUserStats(data);
+    });
+  });
+</script>

@@ -122,13 +122,10 @@ var createGraph = function($target, id, type) {
 };
 
 var createUserStats = function(data) {
-  var html = [];
-
-  getTemplate('user-stats-template.handlebars', function(source) {
-    var template = Handlebars.compile(source);
-    var html     = template(data);
-    $('.users').html(html);
-  });
+  var source = $("#user-stats-template").html();
+  var template = Handlebars.compile(source);
+  var html     = template(data);
+  $('.users').html(html);
 };
 
 var getGraph = function(data, type) {
@@ -136,14 +133,5 @@ var getGraph = function(data, type) {
     var $t = $('#'+ d.name).find('.'+ type);
     $t.find('.total-count').html(d.total);
     initHighcharts($t.find('.pie'), type, d);
-  });
-};
-
-var getTemplate = function(name, cb) {
-  $.ajax({
-    url: '/handlebars/'+ name,
-    type: 'GET'
-  }).done(function(res) {
-    cb(res);
   });
 };

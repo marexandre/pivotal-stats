@@ -1,0 +1,32 @@
+<% extend 'layout' %>
+
+<div class="users"></div>
+
+<% include 'handlebars/user-stats-template' %>
+
+<script src="/javascript/helpers.js"></script>
+<script type="text/javascript">
+  $(function() {
+    $.ajax({
+      url: '/api/user_full_stats',
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+      createUserStats(res);
+    });
+
+    $(document)
+      .on('mouseenter', '.task', function(e) {
+        $(this).find('.tooltip')
+          .css({
+            top: e.pageY,
+            left: e.pageX
+          })
+          .show();
+      })
+      .on('mouseleave', '.task', function(e) {
+        $(this).find('.tooltip').hide();
+      });
+
+  });
+</script>
