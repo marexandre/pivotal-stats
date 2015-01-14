@@ -139,29 +139,24 @@ var generateUserData = function(id, type, data) {
         }
       }
 
+      var obj = {
+        'project': id,
+        'id': d.id,
+        'state': d.currentState
+      };
+
       switch (d.storyType) {
         case 'feature':
-          users[userID][type].features.push({
-            'project': id,
-            'id': d.id,
-            'state': d.currentState,
-            // 'estimate': d.estimate
-            'estimate': parseInt((d.estimate / jmax) * 10, 10) / 10
-          });
+          obj.estimate = parseInt((d.estimate / jmax) * 10, 10) / 10;
+          users[userID][type].features.push(obj);
           break;
         case 'chore':
-          users[userID][type].chores.push({
-            'project': id,
-            'id': d.id,
-            'state': d.currentState
-          });
+          obj.estimate = parseInt((1 / jmax) * 10, 10) / 10;
+          users[userID][type].chores.push(obj);
           break;
         case 'bug':
-          users[userID][type].bugs.push({
-            'project': id,
-            'id': d.id,
-            'state': d.currentState
-          });
+          obj.estimate = parseInt((1 / jmax) * 10, 10) / 10;
+          users[userID][type].bugs.push(obj);
           break;
       }
     }
