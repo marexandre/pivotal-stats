@@ -5,6 +5,7 @@
 <% include 'handlebars/user-stats-template' %>
 
 <script src="/javascript/helpers.js"></script>
+<script src="/javascript/tooltip.js"></script>
 <script type="text/javascript">
   $(function() {
     $.ajax({
@@ -14,19 +15,5 @@
     }).done(function(res) {
       createUserStats(res);
     });
-
-    $(document)
-      .on('mouseenter', '.task', function(e) {
-        $(this).find('.tooltip')
-          .css({
-            top: e.pageY,
-            left: e.pageX
-          })
-          .show();
-      })
-      .on('mouseleave', '.task', function(e) {
-        $(this).find('.tooltip').hide();
-      });
-
   });
 </script>

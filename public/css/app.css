@@ -19,6 +19,12 @@ a:hover {
   text-decoration: underline;
 }
 
+.clearfix:after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
 .wrapper {
   width: 960px;
   margin: 0 auto;
@@ -54,11 +60,11 @@ a:hover {
 }
 
 .users > .current {
-  background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkIBIwEqmOYVQh3pBifPfu3X9iwhIAnAoD1GrH1gwAAAAASUVORK5CYII=) repeat;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkIBIwEqmOYVQh3pBifPfu3X9iwhIAnAoD1GrH1gwAAAAASUVORK5CYII=) repeat;
   background-position: left bottom;
 }
 .users > .backlog {
-  background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2N89+7dfwYiACMRasBKRhXiDSmigwcAER0D1Iy2o4cAAAAASUVORK5CYII=) repeat;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2N89+7dfwYiACMRasBKRhXiDSmigwcAER0D1Iy2o4cAAAAASUVORK5CYII=) repeat;
   background-position: left top;
 }
 
@@ -118,22 +124,58 @@ a:hover {
   border-bottom: 1px solid #fff;
 }
 
-.task.accepted {
+/*.task.accepted {
   opacity: .25;
 }
+*/
+.task.bug {
+  background-color: rgba(234, 94, 71, 1); /* #ea5e47 */
+}
+.task.bug.accepted {
+  background-color: rgba(234, 94, 71, .25);
+}
+.task.chore {
+  background-color: rgba(77, 72, 67, 1); /* #4d4843 */
+}
+.task.chore.accepted {
+  background-color: rgba(77, 72, 67, .25);
+}
+.task.feature {
+  background-color: rgba(28, 173, 126, 1); /* #1cad7e */
+}
+.task.feature.accepted {
+  background-color: rgba(28, 173, 126, .25);
+}
 
-.task.bugs {
-  background-color: #ea5e47;
-}
-.task.chores {
-  background-color: #4d4843;
-}
-.task.features {
-  background-color: #1cad7e;
+.task.chore .tooltip .estimate,
+.task.bug .tooltip .estimate {
+  display: none;
 }
 
-.clearfix:after {
-  display: table;
-  clear: both;
-  content: "";
+
+.tooltip {
+  position: absolute;
+  top: 5px;
+  left: 50px;
+  z-index: 100;
+  display: none;
+  min-width: 120px;
+  max-width: 260px;
+  /*height: 120px;*/
+  padding: 6px;
+  font-size: 13px;
+  text-align: left;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 0 0 3px rgba(0,0,0,.3);
+}
+.tooltip a {
+  display: block;
+  margin-bottom: 6px;
+  text-decoration: underline;
+}
+.tooltip p {
+  padding: 0 0 2px 0;
+  margin: 0;
 }
