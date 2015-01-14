@@ -21,7 +21,7 @@
   <script type="text/javascript">
     var getProjects = function(cb) {
       $.ajax({
-        url: 'http://localhost:8999/api/projects',
+        url: '/api/projects',
         type: 'GET',
         dataType: 'json'
       }).done(function(res) {
@@ -48,7 +48,7 @@
       });
 
       $.ajax({
-        url: 'http://localhost:8999/api/user_full_stats',
+        url: '/api/user_full_stats',
         type: 'GET',
         dataType: 'json'
       }).done(function(res) {

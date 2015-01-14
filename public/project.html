@@ -22,7 +22,7 @@
 
     var getProjectData = function(id, cb) {
       $.ajax({
-        url: 'http://localhost:8999/api/project/'+ id,
+        url: '/api/project/'+ id,
         type: 'GET',
         dataType: 'json'
       }).done(function(res) {
