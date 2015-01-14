@@ -139,24 +139,20 @@ var generateUserData = function(id, type, data) {
         }
       }
 
-      var obj = {
-        'project': id,
-        'id': d.id,
-        'state': d.currentState
-      };
+      d.project = id;
 
       switch (d.storyType) {
         case 'feature':
-          obj.estimate = parseInt((d.estimate / jmax) * 10, 10) / 10;
-          users[userID][type].features.push(obj);
+          d.estimate = getEstimate(d.estimate, jmax);
+          users[userID][type].features.push(d);
           break;
         case 'chore':
-          obj.estimate = parseInt((1 / jmax) * 10, 10) / 10;
-          users[userID][type].chores.push(obj);
+          d.estimate = getEstimate(1, jmax);
+          users[userID][type].chores.push(d);
           break;
         case 'bug':
-          obj.estimate = parseInt((1 / jmax) * 10, 10) / 10;
-          users[userID][type].bugs.push(obj);
+          d.estimate = getEstimate(1, jmax);
+          users[userID][type].bugs.push(d);
           break;
       }
     }
@@ -168,6 +164,14 @@ var generateUserData = function(id, type, data) {
   }
 
   return tmp;
+};
+
+var getEstimate = function(pt, users) {
+  var e = parseInt((pt / users) * 10, 10);
+  if (e < 5) {
+    e = 5;
+  }
+  return e / 10;
 };
 
 
