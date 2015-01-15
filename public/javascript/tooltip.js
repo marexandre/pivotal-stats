@@ -1,14 +1,17 @@
 $(function() {
+  'use strict';
+
   $(document)
-    .on('mouseenter', '.task', function(e) {
-      $(this).find('.tooltip')
+    .on('mouseenter', '.task', function() {
+      var $task = $(this);
+      $task.find('.tooltip')
         .css({
-          top: e.pageY,
-          left: e.pageX
+          top: $task.position().top,
+          left: $task.position().left + $task.width() - 2
         })
         .show();
     })
-    .on('mouseleave', '.task', function(e) {
+    .on('mouseleave', '.task', function() {
       $(this).find('.tooltip').hide();
     });
 });
