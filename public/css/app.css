@@ -114,11 +114,14 @@ a:hover {
   color: #999;
 }
 
+/* TASK */
 .task {
+  position: relative;
   width: 100%;
   height: 10px;
   border-top: 1px solid #fff;
 }
+
 .backlog .task {
   border-top: 0;
   border-bottom: 1px solid #fff;
@@ -146,25 +149,37 @@ a:hover {
 .task.feature.accepted {
   background-color: rgba(28, 173, 126, .25);
 }
-
+.task.finished:before,
+.task.delivered:before {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  content: "";
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAKElEQVQIW2NkQAPv3r1LY0QWAwkICQnNggvCBECKwILIAmBBdAGQIADJVRM2N6BPSwAAAABJRU5ErkJggg==) repeat;
+}
 .task.chore .tooltip .estimate,
 .task.bug .tooltip .estimate {
   display: none;
 }
 
-
+/* TOOLTIP */
+.task:hover .tooltip {
+  display: block;
+}
 .tooltip {
   position: absolute;
-  top: 5px;
-  left: 50px;
+  top: -6px;
+  left: 26px;
   z-index: 100;
   display: none;
-  min-width: 120px;
-  max-width: 260px;
-  /*height: 120px;*/
+  width: 300px;
+  max-height: 400px;
   padding: 6px;
+  overflow-y: scroll;
   font-size: 13px;
   text-align: left;
+  word-break: break-word;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -178,4 +193,8 @@ a:hover {
 .tooltip p {
   padding: 0 0 2px 0;
   margin: 0;
+}
+.tooltip img {
+  width: 100%;
+  height: auto;
 }
