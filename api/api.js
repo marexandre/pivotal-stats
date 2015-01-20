@@ -72,19 +72,35 @@ var getIterationsProgress = function(data) {
 };
 
 
-// GET /iterations/:project/:type
+// GET /iterations/:project/:scope/:offset/:limit
 exports.iterations = function(req, res) {
   var project = req.params.project;
-  var type = req.params.type;
+  var scope = req.params.scope;
+  var offset = 0;
+  var limit = 1;
 
-  console.log(project);
-  console.log(type);
-
-  if (! utils.isValidIterationsType(type)) {
-    return res.json({ message: type + ' is invalid iterations type' });
+  if (req.params.offset) {
+    offset = req.params.offset;
+  }
+  if (req.params.limit) {
+    limit = req.params.limit;
   }
 
-  pivotal.getIterations(project, type, function(error, data) {
+  console.log(project);
+  console.log(scope);
+  console.log(offset);
+  console.log(limit);
+
+  if (! utils.isValidIterationsType(scope)) {
+    return res.json({ message: scope + ' is invalid iterations scope' });
+  }
+
+  var query = {
+    'scope': scope,
+    'offset': offset,
+    'limit': limit
+  };
+  pivotal.getIterations(project, query, function(error, data) {
     if (error) {
       res.json(error);
       return;
@@ -101,8 +117,20 @@ exports.iterations = function(req, res) {
       return;
     }
 
+    var list = [];
+    console.log('size: '+ data.length);
+    for (var i = 0, imax = data.length; i < imax; i++) {
+      console.log('start: '+ data[i].start);
+      console.log('finish: '+ data[i].finish);
+      console.log('strength: '+ data[i].teamStrength);
+      console.log('- - - - - - - -');
+      list.push( getIterationsProgress(data[i].stories) );
+    }
+
     var obj = getIterationsProgress(data[0].stories);
-    res.json({ data: obj });
+    res.json({ data: list });
+    // var obj = getIterationsProgress(data[0].stories);
+    // res.json({ data: obj });
   });
 };
 
@@ -176,7 +204,7 @@ var getEstimate = function(pt, users) {
 
 
 var getUserStats = function(id, cb) {
-  pivotal.getIterations(id, 'current_backlog', function(error, data) {
+  pivotal.getIterations(id, { 'scope': 'current_backlog' }, function(error, data) {
     if (error) {
       cb(error, []);
       return;

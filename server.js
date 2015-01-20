@@ -13,7 +13,8 @@ var ectRenderer = ECT({ watch: true, root: __dirname + '/views', ext : '.ect' })
 var api = express()
   .get('/projects', API.projects)
   .get('/project/:id', API.project)
-  .get('/iterations/:project/:type', API.iterations)
+  .get('/iterations/:project/:scope', API.iterations)
+  .get('/iterations/:project/:scope/:offset/:limit', API.iterations)
   .get('/user_stats/:id', API.userStats)
   .get('/user_full_stats', API.userFullStats);
 
