@@ -120,17 +120,13 @@ exports.iterations = function(req, res) {
     var list = [];
     console.log('size: '+ data.length);
     for (var i = 0, imax = data.length; i < imax; i++) {
-      console.log('start: '+ data[i].start);
-      console.log('finish: '+ data[i].finish);
-      console.log('strength: '+ data[i].teamStrength);
-      console.log('- - - - - - - -');
-      list.push( getIterationsProgress(data[i].stories) );
+      var obj = getIterationsProgress(data[i].stories);
+      obj.start = data[i].start;
+      obj.finish = data[i].finish;
+      list.push(obj);
     }
 
-    var obj = getIterationsProgress(data[0].stories);
     res.json({ data: list });
-    // var obj = getIterationsProgress(data[0].stories);
-    // res.json({ data: obj });
   });
 };
 

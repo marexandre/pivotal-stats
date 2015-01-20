@@ -48,6 +48,14 @@
     return l;
   };
 
+  var getWeekList = function(data) {
+    var l = [];
+    for (var i = 0, imax = data.length; i < imax; i++) {
+      l.push(new Date(data[i].start).getWeekNumber());
+    }
+    return l;
+  };
+
   $(function() {
     var fullUrl = document.URL;
     var urlArray = fullUrl.split('/');
@@ -74,7 +82,8 @@
       var obj = {
         'features': filterObjectByType(data, 'features'),
         'chores'  : filterObjectByType(data, 'chores'),
-        'bugs'    : filterObjectByType(data, 'bugs')
+        'bugs'    : filterObjectByType(data, 'bugs'),
+        'weeks'   : getWeekList(data)
       };
       buildProjectHistoryChart($('.project-history .graph'), obj);
     });
