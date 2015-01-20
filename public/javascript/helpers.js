@@ -31,9 +31,9 @@ Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
 
 var initHighcharts = function($target, type, data) {
   $target.highcharts({
-    title: { text: '' },
     exporting: { enabled: false },
     credits: { enabled: false },
+    title: { text: '' },
     // tooltip: { enabled: false },
     tooltip: {
       pointFormat: '{point.percentage:.1f}% ({point.y}/{point.total})'
@@ -89,13 +89,54 @@ var initHighcharts = function($target, type, data) {
   });
 };
 
+var buildProjectHistoryChart = function($target, data) {
+  $target.highcharts({
+    chart: {
+      type: 'line'
+      // type: 'column'
+    },
+    exporting: { enabled: false },
+    credits: { enabled: false },
+    legend: { enabled: false },
+    title: { text: '' },
+    xAxis: {
+      categories: ['-6', '-5', '-4', '-3', '-2', '-1']
+    },
+    yAxis: {
+      title: { text: '' },
+      min: 0
+    },
+    tooltip: {
+      valueSuffix: ''
+    },
+    // plotOptions: {
+    //   column: {
+    //     stacking: 'normal'
+    //   }
+    // },
+    series: [{
+      name: 'features',
+      data: data.features,
+      color: '#1CAD7E'
+    }, {
+      name: 'chores',
+      data: data.chores,
+      color: '#4D4843'
+    }, {
+      name: 'bugs',
+      data: data.bugs,
+      color: '#EA5E47'
+    }]
+  });
+};
+
 var getProjectIteration = function(data, type, cb) {
   $.ajax({
     url: '/api/iterations/'+ data.id +'/'+ type,
     type: 'GET',
     dataType: 'json'
   }).done(function(res) {
-    var obj = res.data;
+    var obj = res.data[0];
     obj.name = data.name;
     cb(obj);
   });
@@ -117,7 +158,7 @@ var createGraph = function($target, id, type) {
     type: 'GET',
     dataType: 'json'
   }).done(function(res) {
-    initHighcharts($target.find('.pie'), type, res.data);
+    initHighcharts($target.find('.pie'), type, res.data[0]);
   });
 };
 

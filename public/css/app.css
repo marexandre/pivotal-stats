@@ -19,6 +19,10 @@ a:hover {
   text-decoration: underline;
 }
 
+.pull-left {
+  float: left;
+}
+
 .clearfix:after {
   display: table;
   clear: both;
@@ -29,6 +33,13 @@ a:hover {
   width: 960px;
   margin: 0 auto;
 }
+.graph {
+  margin: 0;
+  color: #999;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
 .pies > div {
   float: left;
 }
@@ -38,21 +49,16 @@ a:hover {
   text-align: center;
 }
 .pie {
-  min-width: 200px;
-  height: 200px;
-  margin: 0;
-  color: #999;
-  text-align: center;
-  background-color: #f4f4f4;
-}
-
-.projects .project {
-  float: left;
-  margin: 0 10px 20px;
-}
-.projects .pie {
   min-width: 150px;
   height: 150px;
+}
+
+.project {
+  margin: 0 10px 20px;
+}
+.project-history .graph {
+  height: 170px;
+  width: 400px;
 }
 
 .users {

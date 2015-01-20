@@ -1,6 +1,12 @@
 <% extend 'layout' %>
 
 <div class="wrapper">
+  <div class="project-meta clearfix">
+    <div class="project-history pull-left">
+      <h3 class="project-title">Project history</h3>
+      <div class="graph">Loading...</div>
+    </div>
+  </div>
   <div class="users"></div>
 </div>
 
@@ -21,6 +27,27 @@
     });
   };
 
+  var getProjectHistoryData = function(id, cb) {
+    $.ajax({
+      url: '/api/iterations/'+ id +'/done/-6/6',
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+      var obj = res.data;
+      cb(obj);
+    });
+  };
+
+  var filterObjectByType = function(data, type) {
+    var l = [];
+    for (var i = 0, imax = data.length; i < imax; i++) {
+      if (data[i][type]) {
+        l.push(data[i][type]);
+      }
+    }
+    return l;
+  };
+
   $(function() {
     var fullUrl = document.URL;
     var urlArray = fullUrl.split('/');
@@ -31,7 +58,8 @@
       var source = $("#projects-template").html();
       var template = Handlebars.compile(source);
       var html     = template([data]);
-      $('.wrapper').prepend(html);
+      // $('.wrapper').prepend(html);
+      $('.project-meta').prepend(html);
 
       getGraph(data, 'backlog');
       getGraph(data, 'current');
@@ -41,5 +69,15 @@
     getUserStats(projectID, function(data) {
       createUserStats(data);
     });
+
+    getProjectHistoryData(projectID, function(data) {
+      var obj = {
+        'features': filterObjectByType(data, 'features'),
+        'chores'  : filterObjectByType(data, 'chores'),
+        'bugs'    : filterObjectByType(data, 'bugs')
+      };
+      buildProjectHistoryChart($('.project-history .graph'), obj);
+    });
+
   });
 </script>

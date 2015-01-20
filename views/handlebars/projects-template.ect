@@ -1,25 +1,25 @@
 <script id="projects-template" type="text/x-handlebars-template">
 {{#each this}}
-  <div id="{{ name }}" class="project">
+  <div id="{{ name }}" class="project pull-left">
     <h3 class="project-title">
       <a href="/project/{{ id }}" target="_blank">{{ name }}: {{ id }}</a>
     </h3>
     <div class="pies clearfix">
       <div class="backlog clearfix">
         <p class="total">backlog: <span class="total-count"></span></p>
-        <div class="pie">
+        <div class="graph pie">
           Loading...
         </div>
       </div>
       <div class="current clearfix">
         <p class="total">current: <span class="total-count"></span></p>
-        <div class="pie">
+        <div class="graph pie">
           Loading...
         </div>
       </div>
       <div class="done clearfix">
         <p class="total">done: <span class="total-count"></span></p>
-        <div class="pie">
+        <div class="graph pie">
           Loading...
         </div>
       </div>
