@@ -1,6 +1,8 @@
 <% extend 'layout' %>
 
-<div class="wrapper projects clearfix"></div>
+<div class="wrapper projects clearfix">
+  <div class="project-list"></div>
+</div>
 
 <div class="users" style="width: 1180px; margin: 0 auto; margin-bottom: 100px;"></div>
 
@@ -9,7 +11,7 @@
 
 <script src="/javascript/helpers.js"></script>
 <script type="text/javascript">
-  var getProjects = function(cb) {
+  var getProjectsData = function(cb) {
     $.ajax({
       url: '/api/projects',
       type: 'GET',
@@ -19,27 +21,23 @@
     });
   };
 
-  $(function() {
-    getProjects(function(data) {
-      var source = $("#projects-template").html();
-      var template = Handlebars.compile(source);
-      var html     = template(data);
-      $('.wrapper').prepend(html);
-
-      for (var i = 0, imax = data.length; i < imax; i++) {
-        getGraph(data[i], 'backlog');
-        getGraph(data[i], 'current');
-        getGraph(data[i], 'done');
-      }
-    });
-
+  var getFullUserStats = function(cb) {
     $.ajax({
       url: '/api/user_full_stats',
       type: 'GET',
       dataType: 'json'
     }).done(function(res) {
-      createUserStats(res);
+      cb(res);
+    });
+  };
+
+  $(function() {
+    getProjectsData(function(data) {
+      onProjectDataLoadComplete(data);
     });
 
+    getFullUserStats(function(data) {
+      createUserStats(data);
+    });
   });
 </script>

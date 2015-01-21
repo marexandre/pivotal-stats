@@ -183,3 +183,16 @@ var getGraph = function(data, type) {
     initHighcharts($t.find('.pie'), type, d);
   });
 };
+
+var onProjectDataLoadComplete = function(data) {
+  var source = $("#projects-template").html();
+  var template = Handlebars.compile(source);
+  var html     = template(data);
+  $('.project-list').html(html);
+
+  for (var i = 0, imax = data.length; i < imax; i++) {
+    getGraph(data[i], 'backlog');
+    getGraph(data[i], 'current');
+    getGraph(data[i], 'done');
+  }
+};

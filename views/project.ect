@@ -2,6 +2,7 @@
 
 <div class="wrapper">
   <div class="project-meta clearfix">
+    <div class="project-list"></div>
     <div class="project-history pull-left">
       <h3 class="project-title">Project history</h3>
       <div class="graph">Loading...</div>
@@ -22,8 +23,7 @@
       type: 'GET',
       dataType: 'json'
     }).done(function(res) {
-      var obj = res.data;
-      cb(obj);
+      cb([res.data]);
     });
   };
 
@@ -33,8 +33,7 @@
       type: 'GET',
       dataType: 'json'
     }).done(function(res) {
-      var obj = res.data;
-      cb(obj);
+      cb(res.data);
     });
   };
 
@@ -63,15 +62,7 @@
     console.log( projectID );
 
     getProjectData(projectID, function(data) {
-      var source = $("#projects-template").html();
-      var template = Handlebars.compile(source);
-      var html     = template([data]);
-      // $('.wrapper').prepend(html);
-      $('.project-meta').prepend(html);
-
-      getGraph(data, 'backlog');
-      getGraph(data, 'current');
-      getGraph(data, 'done');
+      onProjectDataLoadComplete(data);
     });
 
     getUserStats(projectID, function(data) {
