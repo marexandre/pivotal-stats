@@ -107,13 +107,17 @@ var buildProjectHistoryChart = function($target, data) {
     legend: { enabled: false },
     title: { text: '' },
     xAxis: {
-      categories: data.weeks
+      categories: data.weeks,
+      labels: {
+        format: 'w{value}'
+      }
     },
     yAxis: {
       title: { text: '' },
       min: 0
     },
     tooltip: {
+      headerFormat: '<span style="font-size: 10px;">Week {point.key}</span><br/>',
       valueSuffix: ''
     },
     // plotOptions: {
