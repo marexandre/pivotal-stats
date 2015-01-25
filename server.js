@@ -14,8 +14,9 @@ var api = express()
   .get('/projects', API.projects)
   .get('/project/:id', API.project)
   .get('/iterations/:project/:scope', API.iterations)
-  .get('/iterations/:project/:scope/:offset/:limit', API.iterations)
-  .get('/user_stats/:id', API.userStats)
+  .get('/iterations/:project/:scope/:offset', API.iterations)
+  .get('/user_stats/:project_id', API.userStats)
+  .get('/user_history/:user_id/:offset', API.userHistory)
   .get('/user_full_stats', API.userFullStats);
 
 /**
@@ -38,6 +39,9 @@ app
   .get('/users', function (req, res) {
     res.render('users');
   })
+  .get('/history', function (req, res) {
+    res.render('history');
+  });
 
 var port = process.env.PORT || 8999;
 app.listen(port, function() {

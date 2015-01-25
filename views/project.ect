@@ -29,7 +29,7 @@
 
   var getProjectHistoryData = function(id, cb) {
     $.ajax({
-      url: '/api/iterations/'+ id +'/done/-6/6',
+      url: '/api/iterations/'+ id +'/done/6',
       type: 'GET',
       dataType: 'json'
     }).done(function(res) {

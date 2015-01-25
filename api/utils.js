@@ -22,6 +22,11 @@ var flatten = function(list) {
       chores: [],
       bugs: []
     };
+    var done = {
+      features: [],
+      chores: [],
+      bugs: []
+    };
 
     for (var i = 0, imax = l.length; i < imax; i++) {
       if (l[i].hasOwnProperty('current')) {
@@ -34,6 +39,11 @@ var flatten = function(list) {
         backlog.chores = backlog.chores.concat(l[i].backlog.chores);
         backlog.bugs = backlog.bugs.concat(l[i].backlog.bugs);
       }
+      if (l[i].hasOwnProperty('done')) {
+        done.features =  done.features.concat(l[i].done.features);
+        done.chores = done.chores.concat(l[i].done.chores);
+        done.bugs = done.bugs.concat(l[i].done.bugs);
+      }
     }
 
     list[key] = {
@@ -41,7 +51,8 @@ var flatten = function(list) {
       name: l[0].name,
       initials: l[0].initials,
       current: current,
-      backlog: backlog
+      backlog: backlog,
+      done   : done,
     };
   }
 

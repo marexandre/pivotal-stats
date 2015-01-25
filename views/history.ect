@@ -1,0 +1,40 @@
+<% extend 'layout' %>
+
+<div class="wrapper">
+  <div class="user-list"></div>
+</div>
+
+
+<script id="user-history-template" type="text/x-handlebars-template">
+  {{#each data}}
+  <div class="item">
+    <h3>{{ this.name }}</h3>
+    <div id="user-{{ this.id }}" class="user"></div>
+  </div>
+  {{/each}}
+</script>
+
+
+<script src="/javascript/helpers.js"></script>
+<script type="text/javascript">
+  $(function() {
+    $.ajax({
+      url: '/api/user_history/1192156/6',
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+
+      var source = $("#user-history-template").html();
+      var template = Handlebars.compile(source);
+      var html     = template(res);
+      $('.user-list').html(html);
+
+
+      for (var userId in res.data) {
+        var user = res.data[userId];
+        console.log(user.name);
+      }
+
+    });
+  });
+</script>

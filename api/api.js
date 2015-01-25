@@ -72,7 +72,7 @@ var getIterationsProgress = function(data) {
 };
 
 
-// GET /iterations/:project/:scope/:offset/:limit
+// GET /iterations/:project/:scope/:offset
 exports.iterations = function(req, res) {
   var project = req.params.project;
   var scope = req.params.scope;
@@ -80,10 +80,8 @@ exports.iterations = function(req, res) {
   var limit = 1;
 
   if (req.params.offset) {
-    offset = req.params.offset;
-  }
-  if (req.params.limit) {
-    limit = req.params.limit;
+    offset = -req.params.offset;
+    limit = req.params.offset;
   }
 
   console.log(project);
@@ -199,8 +197,8 @@ var getEstimate = function(pt, users) {
 };
 
 
-var getUserStats = function(id, cb) {
-  pivotal.getIterations(id, { 'scope': 'current_backlog' }, function(error, data) {
+var getUserStats = function(projectId, cb) {
+  pivotal.getIterations(projectId, { 'scope': 'current_backlog' }, function(error, data) {
     if (error) {
       cb(error, []);
       return;
@@ -208,28 +206,22 @@ var getUserStats = function(id, cb) {
 
     var current = [];
     if (data[0]) {
-      current = generateUserData(id, 'current', data[0].stories);
+      current = generateUserData(projectId, 'current', data[0].stories);
     }
     var backlog = [];
     if (data[1]) {
-      backlog = generateUserData(id, 'backlog', data[1].stories);
+      backlog = generateUserData(projectId, 'backlog', data[1].stories);
     }
-    var list = [current, backlog];
-    // list = _.flatten(list);
-    // list = _.groupBy(list, 'id');
-    // list = utils.flatten(list);
 
-    // helper.saveJsonToFile('./data/current_backlog_data.json', list);
-
-    cb(null, list);
+    cb(null, [current, backlog]);
   });
 };
 
 // GET /user_stats
 exports.userStats = function(req, res) {
-  var id = req.params.id;
+  var projectId = req.params.project_id;
 
-  getUserStats(id, function(error, data) {
+  getUserStats(projectId, function(error, data) {
     if (error) {
       res.json(error);
       return;
@@ -243,6 +235,63 @@ exports.userStats = function(req, res) {
   });
 };
 
+var getUserHistory = function(projectId, offset, cb) {
+  pivotal.getIterations(projectId, { 'scope': 'done', 'offset': -offset, 'limit': offset }, function(error, data) {
+    if (error) {
+      cb(error, []);
+      return;
+    }
+
+    var list = [];
+    for (var i = 0, imax = data.length; i < imax; i++) {
+      list.push(generateUserData(projectId, 'done', data[i].stories));
+    }
+
+    cb(null, list);
+  });
+};
+
+exports.userHistory = function(req, res) {
+  var userId = req.params.user_id;
+  var offset = req.params.offset;
+
+  pivotal.getProjects(function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
+
+    var asyncTasks = [];
+
+    data.forEach(function(obj) {
+
+      asyncTasks.push(function(cb) {
+        getUserHistory(obj.id, offset, function(error, data) {
+          if (error) {
+            cb(error, []);
+          }
+          cb(null, _.flatten(data, true));
+        });
+      });
+    });
+
+    async.parallel(asyncTasks, function(error, response) {
+      if (error) {
+        res.json(error, []);
+        return;
+      }
+      response = _.flatten(response, true);
+      response = _.groupBy(response, 'id');
+      response = utils.flatten(response);
+
+      // helper.saveJsonToFile('./data/user_history.json', response);
+
+      // res.json({ data: response[userId] });
+      res.json({ data: response });
+    });
+
+  });
+};
 
 exports.userFullStats = function(req, res) {
   pivotal.getProjects(function(error, data) {
