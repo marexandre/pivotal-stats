@@ -235,6 +235,7 @@ exports.userStats = function(req, res) {
   });
 };
 
+
 var getUserHistory = function(projectId, offset, cb) {
   pivotal.getIterations(projectId, { 'scope': 'done', 'offset': -offset, 'limit': offset }, function(error, data) {
     if (error) {
@@ -244,54 +245,60 @@ var getUserHistory = function(projectId, offset, cb) {
 
     var list = [];
     for (var i = 0, imax = data.length; i < imax; i++) {
-      list.push(generateUserData(projectId, 'done', data[i].stories));
+      // helper.saveJsonToFile('./data/test/user_history_'+ projectId +'_'+ i +'.json', data[i]);
+
+      var userData = generateUserData(projectId, 'done', data[i].stories);
+      for (var ii = 0, iimax = userData.length; ii < iimax; ii++) {
+        userData[ii].done.features = userData[ii].done.features.length;
+        userData[ii].done.chores = userData[ii].done.chores.length;
+        userData[ii].done.bugs = userData[ii].done.bugs.length;
+      }
+
+      list.push(userData);
     }
 
     cb(null, list);
   });
 };
 
-exports.userHistory = function(req, res) {
-  var userId = req.params.user_id;
-  var offset = req.params.offset;
-
-  pivotal.getProjects(function(error, data) {
-    if (error) {
-      res.json(error);
-      return;
+var getUserHistoryList = function(data, userId) {
+  var userData = [];
+  var hadData = false;
+  for (var i = 0, imax = data.length; i < imax; i++) {
+    for (var j = 0, jmax = data[i].length; j < jmax; j++) {
+      if (data[i][j].id === userId) {
+        userData.push( data[i][j].done );
+        hadData = true;
+        break;
+      }
     }
 
-    var asyncTasks = [];
-
-    data.forEach(function(obj) {
-
-      asyncTasks.push(function(cb) {
-        getUserHistory(obj.id, offset, function(error, data) {
-          if (error) {
-            cb(error, []);
-          }
-          cb(null, _.flatten(data, true));
-        });
+    if (! hadData) {
+      userData.push({
+        "features": 0,
+        "chores": 0,
+        "bugs": 0
       });
-    });
+    }
+    hadData = false;
+  }
+  return userData;
+};
 
-    async.parallel(asyncTasks, function(error, response) {
-      if (error) {
-        res.json(error, []);
-        return;
-      }
-      response = _.flatten(response, true);
-      response = _.groupBy(response, 'id');
-      response = utils.flatten(response);
+exports.userHistory = function(req, res) {
+  var userId = parseInt(req.params.user_id, 10);
+  var offset = parseInt(req.params.offset, 10);
 
-      // helper.saveJsonToFile('./data/user_history.json', response);
-
-      // res.json({ data: response[userId] });
-      res.json({ data: response });
-    });
-
+  getUserHistory(969040, offset, function(error, data) {
+    if (error) {
+      cb(error, []);
+    }
+    var userData = getUserHistoryList(data, userId);
+    // helper.saveJsonToFile('./data/user_history.json', data);
+    res.json({ data: userData });
   });
 };
+
 
 exports.userFullStats = function(req, res) {
   pivotal.getProjects(function(error, data) {

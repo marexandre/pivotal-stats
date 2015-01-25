@@ -1,6 +1,7 @@
 <% extend 'layout' %>
 
 <div class="wrapper">
+  <h3>History User ID: <%= @userId %></h3>
   <div class="user-list"></div>
 </div>
 
@@ -8,7 +9,7 @@
 <script id="user-history-template" type="text/x-handlebars-template">
   {{#each data}}
   <div class="item">
-    <h3>{{ this.name }}</h3>
+    <h4>{{ this.name }}</h4>
     <div id="user-{{ this.id }}" class="user"></div>
   </div>
   {{/each}}
@@ -17,9 +18,11 @@
 
 <script src="/javascript/helpers.js"></script>
 <script type="text/javascript">
+  var userId = <%= @userId %>;
+
   $(function() {
     $.ajax({
-      url: '/api/user_history/1192156/6',
+      url: '/api/user_history/'+ userId +'/30',
       type: 'GET',
       dataType: 'json'
     }).done(function(res) {
@@ -29,12 +32,13 @@
       var html     = template(res);
       $('.user-list').html(html);
 
+      var obj = {
+        'features': filterObjectByType(res.data, 'features'),
+        'chores'  : filterObjectByType(res.data, 'chores'),
+        'bugs'    : filterObjectByType(res.data, 'bugs')
+      };
 
-      for (var userId in res.data) {
-        var user = res.data[userId];
-        console.log(user.name);
-      }
-
+      buildProjectHistoryChart($('.user-list'), obj);
     });
   });
 </script>

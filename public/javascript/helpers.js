@@ -200,3 +200,21 @@ var onProjectDataLoadComplete = function(data) {
     getGraph(data[i], 'done');
   }
 };
+
+var filterObjectByType = function(data, type) {
+  var l = [];
+  for (var i = 0, imax = data.length; i < imax; i++) {
+    if (data[i].hasOwnProperty(type)) {
+      l.push(data[i][type]);
+    }
+  }
+  return l;
+};
+
+var getWeekList = function(data) {
+  var l = [];
+  for (var i = 0, imax = data.length; i < imax; i++) {
+    l.push(new Date(data[i].start).getWeekNumber());
+  }
+  return l;
+};

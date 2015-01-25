@@ -34,13 +34,17 @@ app
     res.render('index');
   })
   .get('/project/:id', function (req, res) {
-    res.render('project');
+    res.render('project', {
+      projectId: parseInt(req.params.id, 10)
+    });
   })
   .get('/users', function (req, res) {
     res.render('users');
   })
-  .get('/history', function (req, res) {
-    res.render('history');
+  .get('/history/:user_id', function (req, res) {
+    res.render('history', {
+      userId: parseInt(req.params.user_id, 10)
+    });
   });
 
 var port = process.env.PORT || 8999;
