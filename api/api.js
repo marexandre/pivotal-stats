@@ -105,12 +105,12 @@ exports.iterations = function(req, res) {
     }
 
     if (data.length === 0) {
-      res.json({ data: {
+      res.json({ data: [{
           total   : 0,
           features: 0,
           chores  : 0,
           bugs    : 0
-        }
+        }]
       });
       return;
     }
