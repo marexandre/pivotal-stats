@@ -42,7 +42,15 @@
     console.log( projectID );
 
     getProjectData(projectID, function(data) {
-      onProjectDataLoadComplete(data);
+      var source = $("#projects-template").html();
+      var template = Handlebars.compile(source);
+      var html     = template(data);
+      $('.project-list').html(html);
+
+      for (var i = 0, imax = data.length; i < imax; i++) {
+        getGraph(data[i], 'backlog');
+        getCurrentGraph(data[i]);
+      }
     });
 
     getUserStats(projectID, function(data) {

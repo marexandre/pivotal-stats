@@ -188,6 +188,26 @@ var getGraph = function(data, type) {
   });
 };
 
+var getCurrentGraph = function(data) {
+  getProjectIteration(data, 'current', function(d) {
+    // In progress stories
+    var $inProgress = $('#'+ d.name).find('.current');
+    var inProgress = {
+      total   : d.total - d.state.accepted.total,
+      features: d.features - d.state.accepted.features,
+      chores  : d.chores - d.state.accepted.chores,
+      bugs    : d.bugs - d.state.accepted.bugs
+    };
+    $inProgress.find('.total-count').html(inProgress.total);
+    initHighcharts($inProgress.find('.pie'), 'current', inProgress);
+
+    // Accepted stories
+    var $accepted = $('#'+ d.name).find('.done');
+    $accepted.find('.total').html('accepted: '+ d.state.accepted.total);
+    initHighcharts($accepted.find('.pie'), 'done', d.state.accepted);
+  });
+};
+
 var onProjectDataLoadComplete = function(data) {
   var source = $("#projects-template").html();
   var template = Handlebars.compile(source);

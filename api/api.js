@@ -48,18 +48,35 @@ var getIterationsProgress = function(data) {
   var feature = 0;
   var chore = 0;
   var bug = 0;
+  var state = {};
 
   for (var i = 0, imax = data.length; i < imax; i++) {
     var d = data[i];
+
+    if (! state.hasOwnProperty(d.currentState)) {
+      state[d.currentState] = {
+        total   : 0,
+        features: 0,
+        chores  : 0,
+        bugs    : 0
+      };
+    }
+
     switch (d.storyType) {
       case 'feature':
         feature += 1;
+        state[d.currentState].features += 1;
+        state[d.currentState].total += 1;
         break;
       case 'chore':
         chore += 1;
+        state[d.currentState].chores += 1;
+        state[d.currentState].total += 1;
         break;
       case 'bug':
         bug += 1;
+        state[d.currentState].bugs += 1;
+        state[d.currentState].total += 1;
         break;
     }
   }
@@ -67,7 +84,8 @@ var getIterationsProgress = function(data) {
     total   : feature + chore + bug,
     features: feature,
     chores  : chore,
-    bugs    : bug
+    bugs    : bug,
+    state: state
   };
 };
 
