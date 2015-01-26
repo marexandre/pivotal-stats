@@ -4,7 +4,7 @@
   <div class="project-list"></div>
 </div>
 
-<div class="users" style="width: 1180px; margin: 0 auto; margin-bottom: 100px;"></div>
+<div class="users" style="margin-bottom: 100px;"></div>
 
 <% include 'handlebars/projects-template.ect' %>
 <% include 'handlebars/user-stats-template' %>
@@ -36,8 +36,9 @@
       onProjectDataLoadComplete(data);
     });
 
-    getFullUserStats(function(data) {
-      createUserStats(data);
+    getFullUserStats(function(res) {
+      createUserStats(res);
+      $('.users').width( getObjectSize(data.data) * 38 + 180 );
     });
   });
 </script>

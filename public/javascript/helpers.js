@@ -36,6 +36,16 @@ Handlebars.registerHelper("math", function(lvalue, operator, rvalue, options) {
   }[operator];
 });
 
+var getObjectSize = function(obj) {
+  var s = 0;
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      s++;
+    }
+  }
+  return s;
+};
+
 var initHighcharts = function($target, type, data) {
   $target.highcharts({
     exporting: { enabled: false },

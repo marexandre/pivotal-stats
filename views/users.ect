@@ -13,6 +13,7 @@
       dataType: 'json'
     }).done(function(res) {
       createUserStats(res);
+      $('.users').width( getObjectSize(res.data) * 38 + 180 );
     });
   });
 </script>

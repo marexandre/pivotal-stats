@@ -56,12 +56,16 @@ a:hover {
 .project {
   margin: 0 10px 20px;
 }
+.project-meta {
+  margin-bottom: 30px;
+}
 .project-history .graph {
   height: 170px;
   width: 400px;
 }
 
 .users {
+  margin: 0 auto;
   margin-top: 30px;
 }
 
