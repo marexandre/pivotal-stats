@@ -202,12 +202,23 @@ var getCurrentGraph = function(data) {
   getProjectIteration(data, 'current', function(d) {
     // In progress stories
     var $inProgress = $('#'+ d.name).find('.current');
+
+    if (! d.state.accepted) {
+      d.state.accepted = {
+        total   : 0,
+        features: 0,
+        chores  : 0,
+        bugs    : 0
+      };
+    }
+
     var inProgress = {
       total   : d.total - d.state.accepted.total,
       features: d.features - d.state.accepted.features,
       chores  : d.chores - d.state.accepted.chores,
       bugs    : d.bugs - d.state.accepted.bugs
     };
+
     $inProgress.find('.total-count').html(inProgress.total);
     initHighcharts($inProgress.find('.pie'), 'current', inProgress);
 
