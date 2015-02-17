@@ -147,11 +147,19 @@ a:hover {
 .task.bug.accepted {
   background-color: rgba(234, 94, 71, .25);
 }
+.task.bug.finished,
+.task.bug.delivered {
+  background-color: rgba(234, 94, 71, .8);
+}
 .task.chore {
   background-color: rgba(77, 72, 67, 1); /* #4d4843 */
 }
 .task.chore.accepted {
   background-color: rgba(77, 72, 67, .25);
+}
+.task.chore.finished,
+.task.chore.delivered {
+  background-color: rgba(77, 72, 67, .8);
 }
 .task.feature {
   background-color: rgba(28, 173, 126, 1); /* #1cad7e */
@@ -159,10 +167,11 @@ a:hover {
 .task.feature.accepted {
   background-color: rgba(28, 173, 126, .25);
 }
-.task.finished,
-.task.delivered {
-  opacity: 0.7;
+.task.feature.finished,
+.task.feature.delivered {
+  background-color: rgba(28, 173, 126, .8);
 }
+
 .task.finished:before,
 .task.delivered:before {
   position: relative;
