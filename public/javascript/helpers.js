@@ -223,9 +223,9 @@ var getCurrentGraph = function(data) {
     initHighcharts($inProgress.find('.pie'), 'current', inProgress);
 
     // Accepted stories
-    var $accepted = $('#'+ d.name).find('.done');
-    $accepted.find('.total').html('accepted: '+ d.state.accepted.total);
-    initHighcharts($accepted.find('.pie'), 'done', d.state.accepted);
+    var $accepted = $('#'+ d.name).find('.accepted');
+    $accepted.find('.total-count').html(d.state.accepted.total);
+    initHighcharts($accepted.find('.pie'), 'accepted', d.state.accepted);
   });
 };
 
@@ -237,8 +237,7 @@ var onProjectDataLoadComplete = function(data) {
 
   for (var i = 0, imax = data.length; i < imax; i++) {
     getGraph(data[i], 'backlog');
-    getGraph(data[i], 'current');
-    getGraph(data[i], 'done');
+    getCurrentGraph(data[i]);
   }
 };
 
