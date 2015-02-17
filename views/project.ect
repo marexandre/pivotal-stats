@@ -39,7 +39,6 @@
 
   $(function() {
     var projectID = <%= @projectId %>;
-    console.log( projectID );
 
     getProjectData(projectID, function(data) {
       onProjectDataLoadComplete(data);
