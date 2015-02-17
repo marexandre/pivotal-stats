@@ -8,6 +8,7 @@ var helper = require('../helpers/helpers');
 var pivotal = require('./pivotal');
 var config = require('../config.json');
 
+
 // GET /projects
 exports.projects = function(req, res) {
   pivotal.getProjects(function(error, data) {
@@ -147,16 +148,14 @@ exports.iterations = function(req, res) {
 };
 
 
-
-var usersData = require('../data/user_data.json');
-var generateUserData = function(id, type, data) {
+var generateUserData = function(userList, projectId, type, data) {
   var users = {};
 
   for (var i = 0, imax = data.length; i < imax; i++) {
     var d = data[i];
     // console.log('points: '+ d.estimate, ', owned_by: '+ d.ownedById, ', owners: '+ JSON.stringify(d.ownerIds));
 
-    // if (! d.ownedById || ! usersData[d.ownedById]) {
+    // if (! d.ownedById || ! userList[d.ownedById]) {
     if (! d.ownedById) {
       continue;
     }
@@ -173,13 +172,13 @@ var generateUserData = function(id, type, data) {
           bugs: []
         };
 
-        if (usersData[userID]) {
-          users[userID].name = usersData[userID].name;
-          users[userID].initials = usersData[userID].initials;
+        if (userList[userID]) {
+          users[userID].name = userList[userID].name;
+          users[userID].initials = userList[userID].initials;
         }
       }
 
-      d.project = id;
+      d.project = projectId;
 
       switch (d.storyType) {
         case 'feature':
@@ -216,22 +215,29 @@ var getEstimate = function(pt, users) {
 
 
 var getUserStats = function(projectId, cb) {
-  pivotal.getIterations(projectId, { 'scope': 'current_backlog' }, function(error, data) {
+  pivotal.getProjectUsers(projectId, function(error, userList) {
     if (error) {
       cb(error, []);
       return;
     }
 
-    var current = [];
-    if (data[0]) {
-      current = generateUserData(projectId, 'current', data[0].stories);
-    }
-    var backlog = [];
-    if (data[1]) {
-      backlog = generateUserData(projectId, 'backlog', data[1].stories);
-    }
+    pivotal.getIterations(projectId, { 'scope': 'current_backlog' }, function(error, data) {
+      if (error) {
+        cb(error, []);
+        return;
+      }
 
-    cb(null, [current, backlog]);
+      var current = [];
+      if (data[0]) {
+        current = generateUserData(userList, projectId, 'current', data[0].stories);
+      }
+      var backlog = [];
+      if (data[1]) {
+        backlog = generateUserData(userList, projectId, 'backlog', data[1].stories);
+      }
+
+      cb(null, [current, backlog]);
+    });
   });
 };
 
@@ -253,7 +259,46 @@ exports.userStats = function(req, res) {
   });
 };
 
+// GET /user_full_stats
+exports.userFullStats = function(req, res) {
+  pivotal.getProjects(function(error, data) {
+    if (error) {
+      res.json(error);
+      return;
+    }
 
+    var asyncTasks = [];
+
+    data.forEach(function(obj) {
+      asyncTasks.push(function(cb) {
+        getUserStats(obj.id, function(error, data) {
+          if (error) {
+            cb(error, []);
+          }
+          cb(null, _.flatten(data));
+        });
+      });
+    });
+
+    async.parallel(asyncTasks, function(error, response) {
+      if (error) {
+        res.json(error, []);
+        return;
+      }
+      response = _.flatten(response, true);
+      response = _.groupBy(response, 'id');
+      response = utils.flatten(response);
+
+      res.json({ data: response });
+    });
+
+  });
+};
+
+
+
+
+/*
 var getUserHistory = function(projectId, offset, cb) {
   pivotal.getIterations(projectId, { 'scope': 'done', 'offset': -offset, 'limit': offset }, function(error, data) {
     if (error) {
@@ -316,43 +361,4 @@ exports.userHistory = function(req, res) {
     res.json({ data: userData });
   });
 };
-
-
-exports.userFullStats = function(req, res) {
-  pivotal.getProjects(function(error, data) {
-    if (error) {
-      res.json(error);
-      return;
-    }
-
-    var asyncTasks = [];
-
-    data.forEach(function(obj) {
-      // console.log( obj.id );
-
-      asyncTasks.push(function(cb) {
-        getUserStats(obj.id, function(error, data) {
-          if (error) {
-            cb(error, []);
-          }
-          cb(null, _.flatten(data));
-        });
-      });
-    });
-
-    async.parallel(asyncTasks, function(error, response) {
-      if (error) {
-        res.json(error, []);
-        return;
-      }
-      response = _.flatten(response, true);
-      response = _.groupBy(response, 'id');
-      response = utils.flatten(response);
-
-      // helper.saveJsonToFile('./data/all_user_stats.json', response);
-
-      res.json({ data: response });
-    });
-
-  });
-};
+*/

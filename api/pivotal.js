@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('underscore');
 var config = require('../config.json');
 var tracker = require('pivotaltracker');
 var client = new tracker.Client(config.token);
@@ -73,5 +74,30 @@ exports.getIterations = function(id, obj, cb) {
 
     console.log('iterations data items: '+ data.length);
     cb(null, data);
+  });
+};
+
+/**
+ * getUserList returns a list of users for a given project
+ * @param {[type]}   projectId [description]
+ * @param {Function} cb        [description]
+ */
+exports.getProjectUsers = function(id, cb) {
+  var users = [];
+
+  client.project(id).memberships.all(function(error, data) {
+    if (error) {
+      console.log('[ERROR] client.project('+ id +').memberships.all');
+      console.log(error);
+      cb(error, users);
+      return;
+    }
+
+    for (var i = 0, imax = data.length; i < imax; i++) {
+      users.push(data[i].person);
+    }
+    users = _.indexBy(users, 'id');
+
+    cb(null, users);
   });
 };
