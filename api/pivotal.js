@@ -72,7 +72,6 @@ exports.getIterations = function(id, obj, cb) {
       return;
     }
 
-    console.log('iterations data items: '+ data.length);
     cb(null, data);
   });
 };

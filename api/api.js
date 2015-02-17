@@ -103,11 +103,6 @@ exports.iterations = function(req, res) {
     limit = req.params.offset;
   }
 
-  console.log(project);
-  console.log(scope);
-  console.log(offset);
-  console.log(limit);
-
   if (! utils.isValidIterationsType(scope)) {
     return res.json({ message: scope + ' is invalid iterations scope' });
   }
@@ -135,7 +130,6 @@ exports.iterations = function(req, res) {
     }
 
     var list = [];
-    console.log('size: '+ data.length);
     for (var i = 0, imax = data.length; i < imax; i++) {
       var obj = getIterationsProgress(data[i].stories);
       obj.start = data[i].start;
