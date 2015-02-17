@@ -1,6 +1,6 @@
 <div class="task {{this.storyType}} {{this.currentState}}" style="height: {{math this.estimate "*" 10 }}px;">
   <div class="tooltip">
-    <a href="{{this.url}}">{{this.name}}</a>
+    <a href="{{this.url}}" target="_blank">{{this.name}}</a>
     <p>Tags: {{#each this.labels}}{{#if @index}}, {{/if}}{{this.name}}{{/each}}</p>
     <p class="estimate">Estimate: {{this.estimate}}pt</p>
     <p>Type: {{this.storyType}}</p>
