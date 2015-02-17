@@ -159,6 +159,10 @@ a:hover {
 .task.feature.accepted {
   background-color: rgba(28, 173, 126, .25);
 }
+.task.finished,
+.task.delivered {
+  opacity: 0.7;
+}
 .task.finished:before,
 .task.delivered:before {
   position: relative;
