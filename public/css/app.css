@@ -54,15 +54,24 @@ a:hover {
 }
 
 .project {
-  margin: 0 10px 20px;
+  margin: 0 12px 36px;
 }
 .project-meta {
-  margin-bottom: 30px;
+  margin-bottom: 36px;
 }
 .project-history .graph {
-  height: 170px;
+  height: 220px;
   width: 480px;
 }
+
+.project-meta .project {
+  margin-left: 0;
+}
+/* .project-meta .pie {
+  min-width: 130px;
+  height: 130px;
+}
+ */
 
 .users {
   margin: 0 auto;

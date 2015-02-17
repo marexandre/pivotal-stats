@@ -124,7 +124,12 @@ var buildProjectHistoryChart = function($target, data) {
     },
     exporting: { enabled: false },
     credits: { enabled: false },
-    legend: { enabled: false },
+    legend: {
+      // enabled: false
+      // align: 'right',
+      // verticalAlign: 'middle',
+      // layout: 'vertical'
+    },
     title: { text: '' },
     xAxis: {
       categories: data.weeks,
@@ -208,11 +213,23 @@ var getGraph = function(data, type) {
   });
 };
 
-var getCurrentGraph = function(data) {
-  getProjectIteration(data, 'current', function(d) {
-    // In progress stories
-    var $inProgress = $('#'+ d.name).find('.current');
+var addProjectPie = function(d, list) {
+  var $pies = $('#'+ d.name).find('.pies');
 
+  for (var i = 0, imax = list.length; i < imax; i++) {
+    var source = $("#project-pie-template").html();
+    var template = Handlebars.compile(source);
+    var html     = template({ 'status': list[i] });
+    $pies.append(html)
+  }
+};
+
+// var list = ['planned', 'started', 'finished', 'delivered', 'rejected', 'accepted'];
+// var list = ['accepted'];
+var getCurrentGraph = function(data, list) {
+  addProjectPie(data, list);
+
+  getProjectIteration(data, 'current', function(d) {
     if (! d.state.accepted) {
       d.state.accepted = {
         total   : 0,
@@ -223,19 +240,26 @@ var getCurrentGraph = function(data) {
     }
 
     var inProgress = {
-      total   : d.total - d.state.accepted.total,
-      features: d.features - d.state.accepted.features,
-      chores  : d.chores - d.state.accepted.chores,
-      bugs    : d.bugs - d.state.accepted.bugs
+      total   : d.total,
+      features: d.features,
+      chores  : d.chores,
+      bugs    : d.bugs
     };
 
+    for (var i = 0, imax = list.length; i < imax; i++) {
+      inProgress.total    -= d.state[ list[i] ].total || 0,
+      inProgress.features -= d.state[ list[i] ].features || 0,
+      inProgress.chores   -= d.state[ list[i] ].chores || 0,
+      inProgress.bugs     -= d.state[ list[i] ].bugs || 0
+
+      var $tmp = $('#'+ d.name).find('.'+ list[i]);
+      $tmp.find('.total-count').html(d.state[ list[i] ].total || 0);
+      initHighcharts($tmp.find('.pie'), list[i], d.state[ list[i] ] || 0);
+    }
+
+    var $inProgress = $('#'+ data.name).find('.current');
     $inProgress.find('.total-count').html(inProgress.total);
     initHighcharts($inProgress.find('.pie'), 'current', inProgress);
-
-    // Accepted stories
-    var $accepted = $('#'+ d.name).find('.accepted');
-    $accepted.find('.total-count').html(d.state.accepted.total);
-    initHighcharts($accepted.find('.pie'), 'accepted', d.state.accepted);
   });
 };
 
@@ -246,8 +270,10 @@ var onProjectDataLoadComplete = function(data) {
   $('.project-list').html(html);
 
   for (var i = 0, imax = data.length; i < imax; i++) {
+    addProjectPie(data[i], ['current']);
+
     getGraph(data[i], 'backlog');
-    getCurrentGraph(data[i]);
+    getCurrentGraph(data[i], ['accepted']);
   }
 };
 

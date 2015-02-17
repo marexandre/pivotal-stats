@@ -7,6 +7,7 @@
 <div class="users" style="margin-bottom: 100px;"></div>
 
 <% include 'handlebars/projects-template.ect' %>
+<% include 'handlebars/project-pie-template.ect' %>
 <% include 'handlebars/user-stats-template' %>
 
 <script src="/javascript/helpers.js"></script>
@@ -34,6 +35,18 @@
   $(function() {
     getProjectsData(function(data) {
       onProjectDataLoadComplete(data);
+
+      // var source = $("#projects-template").html();
+      // var template = Handlebars.compile(source);
+      // var html     = template(data);
+      // $('.project-list').html(html);
+      //
+      // for (var i = 0, imax = data.length; i < imax; i++) {
+      //   addProjectPie(data[i], ['current']);
+      //
+      //   getGraph(data[i], 'backlog');
+      //   getCurrentGraph(data[i], ['accepted']);
+      // }
     });
 
     getFullUserStats(function(res) {

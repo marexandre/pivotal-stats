@@ -2,16 +2,20 @@
 
 <div class="wrapper">
   <div class="project-meta clearfix">
+    <!-- PROJECT STATUS -->
     <div class="project-list"></div>
+    <!-- PROJECT HISTORY -->
     <div class="project-history pull-left">
       <h3 class="project-title">Project history</h3>
       <div class="graph">Loading...</div>
     </div>
   </div>
+  <!-- PROJECT TASKS -->
   <div class="users"></div>
 </div>
 
 <% include 'handlebars/projects-template.ect' %>
+<% include 'handlebars/project-pie-template.ect' %>
 <% include 'handlebars/user-stats-template' %>
 
 <script src="/javascript/helpers.js"></script>
@@ -29,7 +33,7 @@
 
   var getProjectHistoryData = function(id, cb) {
     $.ajax({
-      url: '/api/iterations/'+ id +'/done/7',
+      url: '/api/iterations/'+ id +'/done/8',
       type: 'GET',
       dataType: 'json'
     }).done(function(res) {
@@ -42,6 +46,15 @@
 
     getProjectData(projectID, function(data) {
       onProjectDataLoadComplete(data);
+      // var source = $("#projects-template").html();
+      // var template = Handlebars.compile(source);
+      // var html     = template(data);
+      // $('.project-list').html(html);
+      //
+      // for (var i = 0, imax = data.length; i < imax; i++) {
+      //   getGraph(data[i], 'backlog');
+      //   getCurrentGraph(data[i], ['planned', 'started', 'finished', 'delivered', 'rejected', 'accepted']);
+      // }
     });
 
     getUserStats(projectID, function(data) {
