@@ -38,7 +38,7 @@
 
     getFullUserStats(function(res) {
       createUserStats(res);
-      $('.users').width( getObjectSize(data.data) * 38 + 180 );
+      $('.users').width( getObjectSize(res.data) * 38 + 180 );
     });
   });
 </script>
