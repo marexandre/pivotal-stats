@@ -1,5 +1,13 @@
 'use strict';
 
+var COLORS = {
+  BG      : '#FEFEFE',
+  FEATURES: '#1CAD7E',
+  CHORES  : '#4D4843',
+  BUGS    : '#EA5E47'
+};
+
+
 Date.prototype.getWeekNumber = function() {
   var d = new Date(+this);
   d.setHours(0,0,0);
@@ -48,6 +56,17 @@ var getObjectSize = function(obj) {
 
 var initHighcharts = function($target, type, data) {
   $target.highcharts({
+    chart: {
+      backgroundColor: COLORS.BG,
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false,
+      margin: [0, 0, 0, 0],
+      spacingTop: 0,
+      spacingBottom: 0,
+      spacingLeft: 0,
+      spacingRight: 0
+    },
     exporting: { enabled: false },
     credits: { enabled: false },
     title: { text: '' },
@@ -71,16 +90,6 @@ var initHighcharts = function($target, type, data) {
         }
       }
     },
-    chart: {
-      plotBackgroundColor: null,
-      plotBorderWidth: null,
-      plotShadow: false,
-      margin: [0, 0, 0, 0],
-      spacingTop: 0,
-      spacingBottom: 0,
-      spacingLeft: 0,
-      spacingRight: 0
-    },
     series: [{
       showInLegend: false,
       type: 'pie',
@@ -89,17 +98,17 @@ var initHighcharts = function($target, type, data) {
         {
           name: 'features',
           y: data.features,
-          color: '#1CAD7E'
+          color: COLORS.FEATURES
         },
         {
           name: 'chores',
           y: data.chores,
-          color: '#4D4843'
+          color: COLORS.CHORES
         },
         {
           name: 'bugs',
           y: data.bugs,
-          color: '#EA5E47'
+          color: COLORS.BUGS
         },
       ]
     }]
@@ -109,6 +118,7 @@ var initHighcharts = function($target, type, data) {
 var buildProjectHistoryChart = function($target, data) {
   $target.highcharts({
     chart: {
+      backgroundColor: COLORS.BG,
       type: 'line'
       // type: 'column'
     },
@@ -138,15 +148,15 @@ var buildProjectHistoryChart = function($target, data) {
     series: [{
       name: 'features',
       data: data.features,
-      color: '#1CAD7E'
+      color: COLORS.FEATURES
     }, {
       name: 'chores',
       data: data.chores,
-      color: '#4D4843'
+      color: COLORS.CHORES
     }, {
       name: 'bugs',
       data: data.bugs,
-      color: '#EA5E47'
+      color: COLORS.BUGS
     }]
   });
 };
