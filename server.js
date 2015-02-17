@@ -16,7 +16,7 @@ var api = express()
   .get('/iterations/:project/:scope', API.iterations)
   .get('/iterations/:project/:scope/:offset', API.iterations)
   .get('/user_stats/:project_id', API.userStats)
-  .get('/user_history/:user_id/:offset', API.userHistory)
+  // .get('/user_history/:user_id/:offset', API.userHistory)
   .get('/user_full_stats', API.userFullStats);
 
 /**
@@ -40,12 +40,12 @@ app
   })
   .get('/users', function (req, res) {
     res.render('users');
-  })
-  .get('/history/:user_id', function (req, res) {
-    res.render('history', {
-      userId: parseInt(req.params.user_id, 10)
-    });
   });
+  // .get('/history/:user_id', function (req, res) {
+  //   res.render('history', {
+  //     userId: parseInt(req.params.user_id, 10)
+  //   });
+  // });
 
 var port = process.env.PORT || 8999;
 app.listen(port, function() {
